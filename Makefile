@@ -9,7 +9,6 @@ main:
 	git checkout main
 	git branch
 	git pull
-	git checkout trials
 
 start:
 	cd orders && node server.js & \
