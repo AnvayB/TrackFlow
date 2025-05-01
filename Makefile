@@ -1,3 +1,4 @@
+# Github commands:
 add:
 	git status
 	git add .
@@ -10,6 +11,7 @@ main:
 	git branch
 	git pull
 
+# Start and Stop the application
 start:
 	cd orders && node server.js & \
 	cd verification && node server.js & \
@@ -20,7 +22,7 @@ stop:
 	@pkill -f "npm run dev" || true
 
 
-
+# Start and Stop the application with Docker
 docker:
 	docker-compose up --build
 docker-build:
