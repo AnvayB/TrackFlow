@@ -1,4 +1,28 @@
 /* General layout */
+
+/* Full-width header */
+.App-header {
+  background-color: #004aad;
+  color: white;
+  padding: 1rem 2rem;
+  text-align: center;
+  width: 100%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Inner app content */
+.App-content {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 body {
   font-family: Arial, sans-serif;
   background-color: #f5f7fa;
@@ -31,6 +55,8 @@ form {
 }
 
 input, select {
+  background-color: white;
+  color: black;
   padding: 0.5rem;
   font-size: 1rem;
   border: 1px solid #ccc;
@@ -68,6 +94,7 @@ li {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  color: black;
 }
 
 li strong {
