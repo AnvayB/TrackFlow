@@ -85,16 +85,12 @@ export default function App() {
     fetchVerifications();
   };
 
-
-  
-
-
- 
-
   return (   
-    
-      
-    <main className="App-content" style={{ padding: '2rem' }}>
+    <div>
+      <header className="App-header">
+        <h1>TrackFlow</h1>
+      </header>
+     <main className="App-content" style={{ padding: '2rem' }}>
       <h2>Order Management</h2>
       <form onSubmit={handleSubmit}>
         <input name="customerName" value={form.customerName} onChange={handleChange} placeholder="Customer Name" required />
@@ -133,5 +129,6 @@ export default function App() {
         ))}
       </ul>
     </main>
+    </div>
   );
 }
