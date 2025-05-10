@@ -7,9 +7,7 @@ add:
 # git commit -m "message"
 
 main:
-	git checkout main
-	git branch
-	git pull
+	git pull origin main
 
 # Start and Stop the application
 start:
