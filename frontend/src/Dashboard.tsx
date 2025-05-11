@@ -3,8 +3,6 @@ import './Dashboard.css';
 import OrderManager from './components/OrderManager';
 import VerificationManager from './components/VerificationManager';
 import Services from './Services';
-// import ReportingManager from './ReportingManager';
-// import NotificationManager from './NotificationManager';
 
 interface Tab {
   title: string;
@@ -16,8 +14,6 @@ export default function Dashboard() {
     { title: 'Services', component: <Services /> },
     { title: 'Orders', component: <OrderManager /> },
     { title: 'Verification', component: <VerificationManager /> },
-    // { title: 'Reporting', component: <ReportingManager /> },
-    // { title: 'Notifications', component: <NotificationManager /> },
   ];
 
   const [activeTab, setActiveTab] = useState(tabs[0].title);

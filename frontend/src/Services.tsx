@@ -8,13 +8,8 @@ export default function Services() {
 
   const allBoxes = [
     { title: 'Orders', route: '/orders' },
-    { title: 'Verification', route: '/verification' },
     { title: 'Notifications' },
-    { title: 'Users' },
     { title: 'Invoices' },
-    { title: 'Reporting' },
-    { title: 'Health Check' },
-    { title: 'Feedback' },
   ];
 
   const [visibleTitles, setVisibleTitles] = useState(allBoxes.map(b => b.title));
@@ -32,24 +27,6 @@ export default function Services() {
 
   return (
     <>
-      <header className="dashboard-header">
-        {/* <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>☰</button>
-        {menuOpen && (
-          <div className="module-menu">
-            <strong>Customize View</strong>
-            {allBoxes.map((box, idx) => (
-              <label key={idx}>
-                <input
-                  type="checkbox"
-                  checked={visibleTitles.includes(box.title)}
-                  onChange={() => toggleModule(box.title)}
-                />
-                {box.title}
-              </label>
-            ))}
-          </div>
-        )} */}
-      </header>
 
       <div className="dashboard-container">
         {filteredBoxes.map((box, index) => (
