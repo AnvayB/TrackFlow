@@ -7,10 +7,14 @@ services:
       - "3001:3001"
     restart: unless-stopped
 
-  verification-service:
-    build: ./verification-service
+  notifications-service:
+    build: ./notifications
     ports:
-      - "3002:3002"
-    volumes:
-      - ./verification-service/uploads:/app/uploads
+      - "4000:4000"
     restart: unless-stopped
+  
+  invoices-service:
+    build: ./invoices
+    ports:
+      - "3003:3003"
+    restart: unless-stopped  
