@@ -1,9 +1,7 @@
 import { JSX, useState } from 'react';
-import './Dashboard.css';
+import './Menu.css';
 import OrderManager from './components/OrderManager';
-import VerificationManager from './components/VerificationManager';
-import Services from './Services';
-
+import InvoiceManager from './components/InvoiceManager';
 interface Tab {
   title: string;
   component: JSX.Element;
@@ -11,9 +9,8 @@ interface Tab {
 
 export default function Dashboard() {
   const tabs: Tab[] = [
-    { title: 'Services', component: <Services /> },
     { title: 'Orders', component: <OrderManager /> },
-    { title: 'Verification', component: <VerificationManager /> },
+    { title: 'Invoices', component: <InvoiceManager /> },
   ];
 
   const [activeTab, setActiveTab] = useState(tabs[0].title);
