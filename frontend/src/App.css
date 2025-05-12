@@ -1,14 +1,11 @@
-
-body, .App-header {
-  margin: 0;
-  padding: 0;
-}
-
+/* Header styling stays here */
 .App-header {
   background-color: #004aad;
   color: white;
   text-align: center;
   width: 100%;
+  height: 70px;
+  padding: 10px 0;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
   position: sticky;
   top: 0;
@@ -16,112 +13,18 @@ body, .App-header {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 70px; 
-  padding: 10px 0;
 }
 
 .App-header h1 a {
   font-size: 2.5rem;
   margin: 0;
   color: white;
-  
+  text-decoration: none;
 }
 
-
-.App-content {
-  max-width: 1000px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background-color: #ffffff;
-  border-radius: 8px;
-  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); */
-}
-  
-
-h2 {
-  margin-bottom: 1.5rem;
-  text-align: center;
-  color: #333;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 2rem;
-}
-
-input, select {
-  background-color: white;
-  color: black;
-  padding: 0.5rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-button {
-  width: fit-content;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  background-color: #e9f2ff;
-  border: 1px solid #d0e3ff;
-  border-radius: 5px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: black;
-}
-
-li strong {
-  color: #333;
-}
-
-li button {
-  margin-left: 0.5rem;
-  background-color: #28a745;
-}
-
-li button:last-child {
-  background-color: #dc3545;
-}
-
-li button:hover {
-  opacity: 0.9;
-}
-
-.App-header {
-  background-color: #004aad;
-  color: white;
-  text-align: center;
-  padding: 1rem;
-}
-
-.App-content {
-  padding: 2rem;
-}
-.App-content h2 {
-  margin-bottom: 1.5rem;
-  text-align: center;
-  color: #333;
+/* Optional: General body color or reset */
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background-color: #222; /* Optional: gives contrast behind white cards */
 }

@@ -6,8 +6,13 @@ add:
 
 # git commit -m "message"
 
+# Only for Anvay
+anvay:
+	git push origin anvay
 main:
+	git checkout main
 	git pull origin main
+	git checkout anvay
 
 # Start and Stop the application
 start:
