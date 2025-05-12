@@ -12,7 +12,7 @@ main:
 # Start and Stop the application
 start:
 	cd orders && node server.js & \
-	cd verification && node server.js & \
+	cd invoices && node server.js & \
 	cd frontend && npm run dev
 
 stop:
