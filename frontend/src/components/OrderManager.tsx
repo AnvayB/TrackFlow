@@ -1,5 +1,7 @@
+
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import axios from 'axios';
+import './Orders.css';
 
 interface Order {
   id: number;
@@ -57,8 +59,14 @@ export default function OrderManager() {
   }, []);
 
   const fetchOrders = async () => {
-    const res = await axios.get(ORDER_API);
-    setOrders(res.data);
+    try {
+      const res = await axios.get(ORDER_API);
+      setOrders(res.data);
+    } catch (error) {
+      console.error('Failed to fetch orders:', error);
+      // Using empty array as fallback if API is not available
+      setOrders([]);
+    }
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
