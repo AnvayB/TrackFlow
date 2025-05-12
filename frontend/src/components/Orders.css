@@ -13,7 +13,7 @@ body {
     gap: 20px;
     padding: 2rem;
     background-color: #ffffff;
-    border-radius: 8px;
+    /* border-radius: 8px; */
     width: 100%;
     box-sizing: border-box;
   }
