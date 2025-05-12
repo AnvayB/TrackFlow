@@ -15,8 +15,8 @@ body {
   }
 
   section.invoice-manager {
-    border: 1px solid red;
     margin: 0 20%;
+    padding: 2rem;
   }
   
   /* Input Fields */

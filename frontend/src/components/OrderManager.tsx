@@ -159,14 +159,20 @@ export default function OrderManager() {
               required
             />
             <input
-              type="text"
+              type="number"
               name="productPrice"
               placeholder="Product Price"
               value={productFormData.productPrice}
               onChange={handleProductChange}
               required
             />
-            <button type="submit">Add Product</button>
+            <button type="submit"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.currentTarget.form?.requestSubmit();
+                }
+              }}
+            >Add Product</button>
           </form>
         </section>
       </div>
