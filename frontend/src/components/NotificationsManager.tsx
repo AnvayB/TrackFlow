@@ -1,5 +1,6 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import axios from 'axios';
+import './Notifications.css';
 
 interface Order {
   id: number;
@@ -63,7 +64,7 @@ export default function NotificationsManager() {
   };
 
   return (
-    <section>
+    <section className='notifications-manager'>
       <h2>Order Status Notifications</h2>
       <form onSubmit={handleSubmit}>
         <select 
