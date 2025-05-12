@@ -28,7 +28,7 @@ restart:
 	make stop
 	make start
 
-
+# Install all dependencies
 install-all:
 	for dir in invoices orders notifications; do \
 		(cd $$dir && npm install); \

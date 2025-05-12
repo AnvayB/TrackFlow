@@ -1,0 +1,157 @@
+/* Base Reset */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Main Layout */
+.notifications-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 2rem;
+  background-color: #ffffff;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Notification List */
+.notification-list {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 20px;
+}
+
+/* Typography */
+h2 {
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #333;
+  font-size: 1.5rem;
+  margin-top: 0;
+}
+
+/* Notification Items */
+.notification-item {
+  background-color: #e9f2ff;
+  border: 1px solid #d0e3ff;
+  border-radius: 5px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  color: black;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notification-content {
+  flex-grow: 1;
+}
+
+.notification-time {
+  color: #666;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Notification Types */
+.notification-info {
+  border-left: 4px solid #007bff;
+}
+
+.notification-success {
+  border-left: 4px solid #28a745;
+}
+
+.notification-warning {
+  border-left: 4px solid #ffc107;
+}
+
+.notification-error {
+  border-left: 4px solid #dc3545;
+}
+
+/* Buttons */
+button {
+  width: fit-content;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.mark-read-button {
+  background-color: #6c757d;
+  margin-left: 0.5rem;
+}
+
+.mark-read-button:hover {
+  background-color: #5a6268;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  margin-left: 0.5rem;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+}
+
+/* Notification Filters */
+.notification-filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.filter-button {
+  background-color: #f8f9fa;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.filter-button.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .notifications-container {
+    padding: 1rem;
+  }
+
+  .notification-item {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .notification-actions {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .notification-actions button {
+    flex: 1;
+  }
+} 

@@ -1,5 +1,6 @@
 import { ChangeEvent, useState } from 'react';
 import axios from 'axios';
+import './Invoices.css';
 
 
 interface Order {
@@ -44,11 +45,11 @@ export default function OrderSearch() {
   };
 
   return (
-    <section>
+    <section className='invoice-manager'>
       <h2>Search Orders</h2>
 
       <input
-        type="text"
+        type="number"
         placeholder="Order ID"
         value={searchOrderId}
         onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchOrderId(e.target.value)}

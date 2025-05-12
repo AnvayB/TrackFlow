@@ -181,9 +181,9 @@ export default function OrderManager() {
           <input type="text" name="billingState" placeholder="Billing State" value={paymentFormData.billingState} onChange={handlePaymentChange} required />
           <input type="text" name="billingCountry" placeholder="Billing Country" value={paymentFormData.billingCountry} onChange={handlePaymentChange} required />
           <input type="text" name="billingZipCode" placeholder="Billing Zip Code" value={paymentFormData.billingZipCode} onChange={handlePaymentChange} required />
-          <input type="text" name="cardNumber" placeholder="Card Number" value={paymentFormData.cardNumber} onChange={handlePaymentChange} required />
-          <input type="text" name="securityNumber" placeholder="Security Number" value={paymentFormData.securityNumber} onChange={handlePaymentChange} required />
-          <input type="text" name="expirationDate" placeholder="MM/YY" value={paymentFormData.expirationDate} onChange={handlePaymentChange} required />
+          <input type="number" name="cardNumber" placeholder="Card Number" value={paymentFormData.cardNumber} onChange={handlePaymentChange} required />
+          <input type="number" name="securityNumber" placeholder="Security Number" value={paymentFormData.securityNumber} onChange={handlePaymentChange} required />
+          <input type="date" name="expirationDate" placeholder="MM/YY" value={paymentFormData.expirationDate} onChange={handlePaymentChange} required />
           <div className="submit-button-container">
             <button type="submit">Submit Payment</button>
           </div>
