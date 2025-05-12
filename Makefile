@@ -20,6 +20,12 @@ stop:
 	@pkill -f "npm run dev" || true
 
 
+install-all:
+	for dir in invoices orders notifications; do \
+		(cd $$dir && npm install); \
+	done
+
+
 # Start and Stop the application with Docker
 docker:
 	docker-compose up --build
