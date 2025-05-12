@@ -1,6 +1,5 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import axios from 'axios';
-import './micro.css';
 
 interface Order {
   id: number;
