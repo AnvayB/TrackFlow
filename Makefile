@@ -19,6 +19,10 @@ stop:
 	@pkill -f "node server.js" || true
 	@pkill -f "npm run dev" || true
 
+restart:
+	make stop
+	make start
+
 
 install-all:
 	for dir in invoices orders notifications; do \
