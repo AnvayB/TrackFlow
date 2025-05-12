@@ -1,15 +1,44 @@
+const express = require('express');
+const cors = require('cors');
 const AWS = require('aws-sdk');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const path = require('path');
 
+const app = express();
+const PORT = 3001;
+
+app.use(cors());
+app.use(express.json());
+
 // Configure AWS clients
 const dynamoDb = new AWS.DynamoDB.DocumentClient({ region: 'us-east-2' });
-const ses = new AWS.SES({ region: 'us-west-1' });
-const s3 = new AWS.S3({ region: 'us-west-1' });
+const ses = new AWS.SES({ region: 'us-east-2' });
+const s3 = new AWS.S3({ region: 'us-east-2' });
 
 // S3 bucket name
-const S3_BUCKET = '/invoices-tf/'; // replace with your bucket
+const S3_BUCKET = 'invoices-tf'; // replace with your bucket
+
+let orders = []; // in-memory order storage
+let currentId = 1;
+
+app.post('/orders', (req, res) => {
+  const newOrder = { id: currentId++, ...req.body };
+  orders.push(newOrder);
+  res.status(201).json(newOrder);
+});
+
+app.get('/orders', (req, res) => {
+  res.json(orders);
+});
+
+app.get('/orders/search', (req, res) => {
+  const nameQuery = req.query.name?.toLowerCase() || '';
+  const result = orders.filter(order =>
+    order.customerName.toLowerCase().includes(nameQuery)
+  );
+  res.json(result);
+});
 
 async function getOrderById(orderId) {
   const params = {
@@ -40,12 +69,14 @@ function createInvoicePDF(order, filePath) {
     doc.text(`Status: ${order.status || 'Received'}`);
     doc.moveDown();
 
+    const totalCost = order.productPrice + order.shippingCost + order.tax;
+
     doc.text(`Order ID: ${order.OrderID}`);
     doc.text(`Product: ${order.product}`);
     doc.text(`Price: $${order.productPrice.toFixed(2)}`);
     doc.text(`Shipping: $${order.shippingCost.toFixed(2)}`);
     doc.text(`Tax: $${order.tax.toFixed(2)}`);
-    doc.text(`Total: $${order.totalCost.toFixed(2)}`);
+    doc.text(`Total: $${totalCost.toFixed(2)}`);
 
     doc.end();
     writeStream.on('finish', resolve);
@@ -117,5 +148,9 @@ async function generateAndSendInvoice(orderId) {
     s3Url
   };
 }
+
+app.listen(PORT, () => {
+  console.log(`✅ Server running at http://localhost:${PORT}`);
+});
 
 module.exports = { generateAndSendInvoice };

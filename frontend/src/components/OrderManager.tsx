@@ -5,6 +5,7 @@ import './micro.css';
 interface Order {
   id: number;
   customerName: string;
+  email: string;
   address: string;
   status: string;
 }
@@ -13,7 +14,7 @@ const ORDER_API = 'http://localhost:3001/orders';
 
 export default function OrderManager() {
   const [orders, setOrders] = useState<Order[]>([]);
-  const [form, setForm] = useState<Omit<Order, 'id'>>({ customerName: '', address: '', status: 'Pending' });
+  const [form, setForm] = useState<Omit<Order, 'id'>>({ customerName: '', email: '', address: '', status: 'Pending' });
   const [editingId, setEditingId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -37,7 +38,7 @@ export default function OrderManager() {
     } else {
       await axios.post(ORDER_API, form);
     }
-    setForm({ customerName: '', address: '', status: 'Pending' });
+    setForm({ customerName: '', email: '', address: '', status: 'Pending' });
     fetchOrders();
   };
 
@@ -56,6 +57,7 @@ export default function OrderManager() {
       <h2>Order Management</h2>
       <form onSubmit={handleSubmit}>
         <input name="customerName" value={form.customerName} onChange={handleChange} placeholder="Customer Name" required />
+        <input name="email" value={form.email} onChange={handleChange} placeholder="Email" required />
         <input name="address" value={form.address} onChange={handleChange} placeholder="Address" required />
         <select name="status" value={form.status} onChange={handleChange}>
           <option>Pending</option>
@@ -63,12 +65,18 @@ export default function OrderManager() {
           <option>Out for Delivery</option>
           <option>Delivered</option>
         </select>
-        <button type="submit">{editingId ? 'Update' : 'Add'} Order</button>
+        <button type="submit"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.currentTarget.form?.requestSubmit(); // Programmatically submits the form
+          }
+        }}
+        >{editingId ? 'Update' : 'Add'} Order</button>
       </form>
       <ul>
         {orders.map(order => (
           <li key={order.id}>
-            <strong>{order.customerName}</strong> - {order.address} [{order.status}]
+             <strong>ID #{order.id}: {order.customerName}</strong>  <br />- {order.email} <br />- {order.address} <br />[{order.status}]
             <button onClick={() => handleEdit(order)}>Edit</button>
             <button onClick={() => handleDelete(order.id)}>Delete</button>
           </li>

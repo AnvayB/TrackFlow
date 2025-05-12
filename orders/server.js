@@ -11,8 +11,8 @@ let currentId = 1;
 
 // Create Order
 app.post('/orders', (req, res) => {
-  const { customerName, address, status = 'Pending' } = req.body;
-  const newOrder = { id: currentId++, customerName, address, status };
+  const { customerName, email, address, status = 'Pending' } = req.body;
+  const newOrder = { id: currentId++, customerName, email, address, status };
   orders.push(newOrder);
   res.status(201).json(newOrder);
 });
@@ -32,10 +32,11 @@ app.delete('/orders/:id', (req, res) => {
 // Update Order
 app.put('/orders/:id', (req, res) => {
   const { id } = req.params;
-  const { customerName, address, status } = req.body;
+  const { customerName, email, address, status } = req.body;
   const order = orders.find(order => order.id === parseInt(id));
   if (order) {
     order.customerName = customerName;
+    order.email = email;
     order.address = address;
     order.status = status;
     res.json(order);
