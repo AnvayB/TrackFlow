@@ -1,7 +1,7 @@
 import { JSX, useState } from 'react';
-import './Menu.css';
 import OrderManager from './components/OrderManager';
 import InvoiceManager from './components/InvoiceManager';
+import NotificationsManager from './components/NotificationsManager';
 interface Tab {
   title: string;
   component: JSX.Element;
@@ -11,6 +11,7 @@ export default function Dashboard() {
   const tabs: Tab[] = [
     { title: 'Orders', component: <OrderManager /> },
     { title: 'Invoices', component: <InvoiceManager /> },
+    { title: 'Notifications', component: <NotificationsManager /> },
   ];
 
   const [activeTab, setActiveTab] = useState(tabs[0].title);
