@@ -197,7 +197,7 @@ export default function InvoiceManager() {
               {expandedOrderId === order.orderId && (
                 <div className="order-details">
                   <div className="customer-info">
-                    <h4>Customer Information</h4>
+                    <h4><u>Customer Information</u></h4>
                     <p><strong>Name:</strong> {order.firstName} {order.lastName}</p>
                     <p><strong>Email:</strong> {order.email}</p>
                     <p><strong>Phone:</strong> {order.phoneNumber}</p>
@@ -205,7 +205,7 @@ export default function InvoiceManager() {
                   </div>
                   
                   <div className="order-info">
-                    <h4>Order Information</h4>
+                    <h4><u>Order Information</u></h4>
                     <p><strong>Product:</strong> {order.product}</p>
                     <p><strong>Price:</strong> {formatCurrency(order.price)}</p>
                     <p><strong>Shipping:</strong> {formatCurrency(order.shippingCost)}</p>
@@ -214,7 +214,7 @@ export default function InvoiceManager() {
                   </div>
                   
                   <div className="payment-info">
-                    <h4>Payment Information</h4>
+                    <h4><u>Payment Information</u></h4>
                     <p><strong>Card Holder:</strong> {order.payment.cardFirstName} {order.payment.cardLastName}</p>
                     <p><strong>Card Number:</strong> {maskCard(order.payment.cardNumber || order.payment.cardNumberLast4)}</p>
                   </div>

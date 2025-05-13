@@ -346,6 +346,7 @@ export default function OrderManager() {
             />
             <input 
               name="phoneNumber" 
+              type="number"
               value={form.phoneNumber} 
               onChange={handleChange} 
               maxLength={10}
@@ -384,6 +385,7 @@ export default function OrderManager() {
             />
             <input 
               name="zipCode" 
+              type="number"
               value={form.zipCode} 
               onChange={handleChange} 
               placeholder="Zip Code" 
@@ -435,6 +437,7 @@ export default function OrderManager() {
             />
             <input 
               name="payment.billingZipCode" 
+              type="number"
               value={form.payment.billingZipCode} 
               onChange={handleChange} 
               placeholder="Billing Zip Code" 
@@ -462,6 +465,7 @@ export default function OrderManager() {
             />
             <input 
               name="payment.expDate" 
+              maxLength={4}
               value={form.payment.expDate} 
               onChange={handleChange} 
               placeholder="Expiration Date (MM/YY)" 
