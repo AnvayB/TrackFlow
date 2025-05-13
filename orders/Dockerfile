@@ -17,7 +17,7 @@ EXPOSE 3001
 
 # Set environment variables - these can be overridden at runtime
 ENV NODE_ENV=production
-ENV AWS_REGION=us-west-2
+ENV AWS_REGION=us-east-2
 
 # Run the application
 CMD ["node", "server.js"]
