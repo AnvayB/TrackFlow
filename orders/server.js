@@ -6,6 +6,7 @@
  * - Dual mode: Development (in-memory) or Production (AWS DynamoDB)
  * - Invoice integration with the Invoices microservice
  * - Complete API for order management
+ * - Format conversion for frontend compatibility
  */
 
 const express = require('express');
@@ -244,36 +245,109 @@ const orderStorage = {
   }
 };
 
-// Input validation rules for creating/updating orders
+// Simplified validation rules for easier form submission
 const orderValidationRules = [
-  // User information validation
-  body('firstName').trim().notEmpty().withMessage('First name is required'),
-  body('lastName').trim().notEmpty().withMessage('Last name is required'),
-  body('address').trim().notEmpty().withMessage('Home address is required'),
-  body('city').trim().notEmpty().withMessage('City is required'),
-  body('state').trim().notEmpty().withMessage('State is required'),
-  body('country').trim().notEmpty().withMessage('Country is required'),
-  body('zipCode').trim().notEmpty().withMessage('Zip code is required'),
+  // Basic validation only - more permissive
+  body('firstName').notEmpty().withMessage('First name is required'),
+  body('lastName').notEmpty().withMessage('Last name is required'),
   body('email').isEmail().withMessage('Valid email is required'),
-  body('phoneNumber').trim().notEmpty().withMessage('Phone number is required'),
+  body('phoneNumber').notEmpty().withMessage('Phone number is required'),
+  body('address').notEmpty().withMessage('Address is required'),
+  body('city').notEmpty().withMessage('City is required'),
+  body('state').notEmpty().withMessage('State is required'),
+  body('country').notEmpty().withMessage('Country is required'),
+  body('zipCode').notEmpty().withMessage('Zip code is required'),
   
-  // Payment information validation
-  body('payment.cardFirstName').trim().notEmpty().withMessage('Card first name is required'),
-  body('payment.cardLastName').trim().notEmpty().withMessage('Card last name is required'),
-  body('payment.billingAddress').trim().notEmpty().withMessage('Billing address is required'),
-  body('payment.billingCity').trim().notEmpty().withMessage('Billing city is required'),
-  body('payment.billingState').trim().notEmpty().withMessage('Billing state is required'),
-  body('payment.billingCountry').trim().notEmpty().withMessage('Billing country is required'),
-  body('payment.billingZipCode').trim().notEmpty().withMessage('Billing zip code is required'),
-  body('payment.cardNumber').trim().isCreditCard().withMessage('Valid credit card number is required'),
-  body('payment.securityNumber').isLength({ min: 3, max: 4 }).withMessage('Valid security code is required'),
-  body('payment.expDate').matches(/^(0[1-9]|1[0-2])\/\d{2}$/).withMessage('Expiration date must be in MM/YY format'),
+  // Payment validation with relaxed requirements
+  body('payment').notEmpty().withMessage('Payment information is required'),
+  body('payment.cardFirstName').notEmpty().withMessage('Card first name is required'),
+  body('payment.cardLastName').notEmpty().withMessage('Card last name is required'),
+  body('payment.cardNumber').notEmpty().withMessage('Card number is required'),
+  body('payment.securityNumber').notEmpty().withMessage('Security code is required'),
+  body('payment.expDate').notEmpty().withMessage('Expiration date is required'),
   
-  // Product information validation
-  body('product').trim().notEmpty().withMessage('Product name is required'),
-  body('price').isFloat({ min: 0.01 }).withMessage('Valid product price is required'),
-  body('shippingCost').isFloat({ min: 0 }).withMessage('Valid shipping cost is required')
+  // Product validation with relaxed requirements
+  body('product').notEmpty().withMessage('Product name is required'),
+  body('price').notEmpty().withMessage('Price is required'),
+  body('shippingCost').notEmpty().withMessage('Shipping cost is required')
 ];
+
+// Enhanced function to convert frontend format to backend format with detailed logging
+function convertFrontendToBackendOrder(frontendOrder) {
+  console.log('Converting order format. Original:', JSON.stringify(frontendOrder, null, 2));
+  
+  // Copy the order to avoid modifying the original
+  const backendOrder = { ...frontendOrder };
+  
+  // Convert price and shippingCost to numbers if they're strings
+  if (typeof backendOrder.price === 'string') {
+    backendOrder.price = parseFloat(backendOrder.price) || 0;
+  }
+  
+  if (typeof backendOrder.shippingCost === 'string') {
+    backendOrder.shippingCost = parseFloat(backendOrder.shippingCost) || 0;
+  }
+  
+  // Handle customerName from frontend if present
+  if (backendOrder.customerName && !backendOrder.firstName) {
+    // Try to extract first and last name from customerName
+    const nameParts = backendOrder.customerName.trim().split(' ');
+    if (nameParts.length >= 2) {
+      backendOrder.firstName = nameParts[0];
+      backendOrder.lastName = nameParts.slice(1).join(' ');
+    } else {
+      backendOrder.firstName = backendOrder.customerName;
+      backendOrder.lastName = '';
+    }
+  }
+  
+  // Handle product details from frontend
+  if (backendOrder.product && typeof backendOrder.product === 'object') {
+    if (backendOrder.product.productName) {
+      backendOrder.product = backendOrder.product.productName;
+    }
+    if (backendOrder.product.productPrice && !backendOrder.price) {
+      backendOrder.price = parseFloat(backendOrder.product.productPrice) || 0;
+    }
+  }
+  
+  // Ensure payment object exists
+  if (!backendOrder.payment) {
+    backendOrder.payment = {};
+  }
+  
+  // Handle expDate format conversion - very permissive handling
+  if (backendOrder.payment) {
+    // Handle expirationDate if used instead of expDate
+    if (backendOrder.payment.expirationDate && !backendOrder.payment.expDate) {
+      backendOrder.payment.expDate = backendOrder.payment.expirationDate;
+    }
+    
+    // Try to convert any date format to MM/YY
+    if (backendOrder.payment.expDate) {
+      if (typeof backendOrder.payment.expDate === 'string') {
+        if (backendOrder.payment.expDate.includes('-') || backendOrder.payment.expDate.includes('T')) {
+          try {
+            const date = new Date(backendOrder.payment.expDate);
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear().toString().slice(2);
+            backendOrder.payment.expDate = `${month}/${year}`;
+          } catch (error) {
+            console.log('Date conversion error:', error);
+            // If conversion fails, keep as is but ensure it's a string
+            backendOrder.payment.expDate = String(backendOrder.payment.expDate);
+          }
+        }
+      } else if (backendOrder.payment.expDate) {
+        // Ensure expDate is a string
+        backendOrder.payment.expDate = String(backendOrder.payment.expDate);
+      }
+    }
+  }
+  
+  console.log('Converted order format. Result:', JSON.stringify(backendOrder, null, 2));
+  return backendOrder;
+}
 
 // Async function to generate invoice
 async function generateInvoice(orderId) {
@@ -327,63 +401,73 @@ app.get('/health', (req, res) => {
   });
 });
 
-// 2. Create a new order
+// 2. Create a new order with enhanced logging and error handling
 app.post('/orders', orderValidationRules, async (req, res) => {
-  // Check for validation errors
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  // Generate a unique order ID
-  const orderId = uuidv4();
+  // Log the incoming request body
+  console.log('Received order data:', JSON.stringify(req.body, null, 2));
   
-  // Calculate total cost (product price + shipping + tax)
-  const productPrice = parseFloat(req.body.price);
-  const shippingCost = parseFloat(req.body.shippingCost);
-  const taxRate = 0.08; // 8% tax rate (can be made configurable)
-  const taxAmount = productPrice * taxRate;
-  const totalCost = productPrice + shippingCost + taxAmount;
-
-  // Prepare order item
-  const orderItem = {
-    orderId,
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    address: req.body.address,
-    city: req.body.city,
-    state: req.body.state,
-    country: req.body.country,
-    zipCode: req.body.zipCode,
-    email: req.body.email,
-    phoneNumber: req.body.phoneNumber,
-    payment: {
-      cardFirstName: req.body.payment.cardFirstName,
-      cardLastName: req.body.payment.cardLastName,
-      billingAddress: req.body.payment.billingAddress,
-      billingCity: req.body.payment.billingCity,
-      billingState: req.body.payment.billingState,
-      billingCountry: req.body.payment.billingCountry,
-      billingZipCode: req.body.payment.billingZipCode,
-      // For security, only store last 4 digits of card number
-      cardNumberLast4: req.body.payment.cardNumber.slice(-4),
-      // Don't store full security number, just indicate it was provided
-      securityProvided: true,
-      expDate: req.body.payment.expDate
-    },
-    product: req.body.product,
-    price: productPrice,
-    shippingCost: shippingCost,
-    tax: taxAmount.toFixed(2),
-    totalCost: totalCost.toFixed(2),
-    status: 'received',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  };
-
   try {
+    // Convert frontend format to backend format
+    const convertedOrder = convertFrontendToBackendOrder(req.body);
+    
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      console.log('Validation errors:', JSON.stringify(errors.array(), null, 2));
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    // Generate a unique order ID
+    const orderId = uuidv4();
+    
+    // Calculate total cost (product price + shipping + tax)
+    const productPrice = parseFloat(convertedOrder.price) || 0;
+    const shippingCost = parseFloat(convertedOrder.shippingCost) || 0;
+    const taxRate = 0.08; // 8% tax rate (can be made configurable)
+    const taxAmount = productPrice * taxRate;
+    const totalCost = productPrice + shippingCost + taxAmount;
+
+    // Prepare order item
+    const orderItem = {
+      orderId,
+      firstName: convertedOrder.firstName,
+      lastName: convertedOrder.lastName,
+      address: convertedOrder.address,
+      city: convertedOrder.city,
+      state: convertedOrder.state,
+      country: convertedOrder.country,
+      zipCode: convertedOrder.zipCode,
+      email: convertedOrder.email,
+      phoneNumber: convertedOrder.phoneNumber,
+      payment: {
+        cardFirstName: convertedOrder.payment.cardFirstName,
+        cardLastName: convertedOrder.payment.cardLastName,
+        billingAddress: convertedOrder.payment.billingAddress || convertedOrder.address,
+        billingCity: convertedOrder.payment.billingCity || convertedOrder.city,
+        billingState: convertedOrder.payment.billingState || convertedOrder.state,
+        billingCountry: convertedOrder.payment.billingCountry || convertedOrder.country,
+        billingZipCode: convertedOrder.payment.billingZipCode || convertedOrder.zipCode,
+        // For security, only store last 4 digits of card number
+        cardNumberLast4: convertedOrder.payment.cardNumber.slice(-4),
+        // Don't store full security number, just indicate it was provided
+        securityProvided: true,
+        expDate: convertedOrder.payment.expDate
+      },
+      product: convertedOrder.product,
+      price: productPrice,
+      shippingCost: shippingCost,
+      tax: taxAmount.toFixed(2),
+      totalCost: totalCost.toFixed(2),
+      status: convertedOrder.status || 'received',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    console.log('Created order item:', JSON.stringify(orderItem, null, 2));
+
     // Store order using the appropriate storage method
     await orderStorage.create(orderItem);
+    console.log('Order stored successfully with ID:', orderId);
 
     // After successfully creating the order, try to generate an invoice
     let invoiceResult = { generated: false };
@@ -458,13 +542,20 @@ app.get('/orders/:orderId', async (req, res) => {
 
 // 5. Update an order
 app.put('/orders/:orderId', orderValidationRules, async (req, res) => {
-  // Check for validation errors
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+  // Log the incoming request body
+  console.log('Received update order data:', JSON.stringify(req.body, null, 2));
 
   try {
+    // Convert frontend format to backend format
+    const convertedOrder = convertFrontendToBackendOrder(req.body);
+    
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      console.log('Validation errors:', JSON.stringify(errors.array(), null, 2));
+      return res.status(400).json({ errors: errors.array() });
+    }
+
     const orderId = req.params.orderId;
     
     // Check if order exists
@@ -474,40 +565,41 @@ app.put('/orders/:orderId', orderValidationRules, async (req, res) => {
     }
 
     // Calculate updated total cost
-    const productPrice = parseFloat(req.body.price);
-    const shippingCost = parseFloat(req.body.shippingCost);
+    const productPrice = parseFloat(convertedOrder.price) || 0;
+    const shippingCost = parseFloat(convertedOrder.shippingCost) || 0;
     const taxRate = 0.08; // 8% tax rate (can be made configurable)
     const taxAmount = productPrice * taxRate;
     const totalCost = productPrice + shippingCost + taxAmount;
     
     // Prepare updated order data
     const updatedOrderData = {
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      address: req.body.address,
-      city: req.body.city,
-      state: req.body.state,
-      country: req.body.country,
-      zipCode: req.body.zipCode,
-      email: req.body.email,
-      phoneNumber: req.body.phoneNumber,
+      firstName: convertedOrder.firstName,
+      lastName: convertedOrder.lastName,
+      address: convertedOrder.address,
+      city: convertedOrder.city,
+      state: convertedOrder.state,
+      country: convertedOrder.country,
+      zipCode: convertedOrder.zipCode,
+      email: convertedOrder.email,
+      phoneNumber: convertedOrder.phoneNumber,
       payment: {
-        cardFirstName: req.body.payment.cardFirstName,
-        cardLastName: req.body.payment.cardLastName,
-        billingAddress: req.body.payment.billingAddress,
-        billingCity: req.body.payment.billingCity,
-        billingState: req.body.payment.billingState,
-        billingCountry: req.body.payment.billingCountry,
-        billingZipCode: req.body.payment.billingZipCode,
-        cardNumberLast4: req.body.payment.cardNumber.slice(-4),
+        cardFirstName: convertedOrder.payment.cardFirstName,
+        cardLastName: convertedOrder.payment.cardLastName,
+        billingAddress: convertedOrder.payment.billingAddress || convertedOrder.address,
+        billingCity: convertedOrder.payment.billingCity || convertedOrder.city,
+        billingState: convertedOrder.payment.billingState || convertedOrder.state,
+        billingCountry: convertedOrder.payment.billingCountry || convertedOrder.country,
+        billingZipCode: convertedOrder.payment.billingZipCode || convertedOrder.zipCode,
+        cardNumberLast4: convertedOrder.payment.cardNumber.slice(-4),
         securityProvided: true,
-        expDate: req.body.payment.expDate
+        expDate: convertedOrder.payment.expDate
       },
-      product: req.body.product,
+      product: convertedOrder.product,
       price: productPrice,
       shippingCost: shippingCost,
       tax: taxAmount.toFixed(2),
       totalCost: totalCost.toFixed(2),
+      status: convertedOrder.status || existingOrder.status || 'received',
       updatedAt: new Date().toISOString()
     };
 
@@ -529,7 +621,6 @@ app.patch('/orders/:orderId/status', [
   body('status')
     .trim()
     .notEmpty()
-    .isIn(['received', 'processing', 'shipped', 'in-transit', 'delivered', 'cancelled'])
     .withMessage('Valid status is required')
 ], async (req, res) => {
   // Check for validation errors
@@ -587,14 +678,8 @@ app.delete('/orders/:orderId', async (req, res) => {
 
 // 8. Filter orders by status
 app.get('/orders/status/:status', async (req, res) => {
-  const validStatuses = ['received', 'processing', 'shipped', 'in-transit', 'delivered', 'cancelled'];
-  const status = req.params.status;
-  
-  if (!validStatuses.includes(status)) {
-    return res.status(400).json({ error: 'Invalid status parameter' });
-  }
-  
   try {
+    const status = req.params.status;
     const filteredOrders = await orderStorage.filterByStatus(status);
     res.status(200).json(filteredOrders);
   } catch (error) {
