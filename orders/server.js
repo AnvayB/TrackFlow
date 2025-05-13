@@ -27,6 +27,7 @@ console.log(`Running in ${isDevelopment ? 'DEVELOPMENT' : 'PRODUCTION'} mode`);
 
 // Invoices service configuration
 const INVOICES_SERVICE_URL = process.env.INVOICES_SERVICE_URL || 'http://localhost:3002';
+const NOTIFICATIONS_SERVICE_URL = process.env.NOTIFICATIONS_SERVICE_URL || 'http://localhost:4000';
 
 // Middleware
 app.use(bodyParser.json());
@@ -648,6 +649,17 @@ app.patch('/orders/:orderId/status', [
       message: 'Order status updated successfully',
       order: updatedOrder
     });
+
+    try {
+        await axios.post(`${NOTIFICATIONS_SERVICE_URL}/notify`, {
+          orderId,
+          customerEmail: updatedOrder.email,
+          status:        updatedOrder.status
+        });
+        console.log(`→ Sent notify to ${updatedOrder.email}`);
+      } catch (notifyErr) {
+        console.error('→ Failed to notify:', notifyErr.message);
+      }
   } catch (error) {
     console.error('Error updating order status:', error);
     res.status(500).json({ error: 'Failed to update order status', details: error.message });
