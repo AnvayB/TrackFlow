@@ -1,0 +1,92 @@
+name: Deploy Notifications Service to ECS
+
+on:
+  push:
+    paths:
+      - 'notifications/**'
+      - '.github/workflows/deploy-notifications.yml'
+
+jobs:
+  deploy:
+    name: Build, Push, and Deploy to ECS
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    env:
+      AWS_REGION: us-east-1
+      ECR_REPO_NAME: trackflow-notifications
+      ECS_CLUSTER: trackflow-cluster
+      ECS_SERVICE: notifications-service
+      CONTAINER_NAME: notifications
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::286005182086:role/trackflow-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build Docker image
+        run: |
+          docker build -t $ECR_REPO_NAME ./notifications
+          docker tag $ECR_REPO_NAME:latest ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO_NAME:latest
+
+      - name: Push Docker image to ECR
+        run: |
+          docker push ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO_NAME:latest
+
+      - name: Prepare ECS task definition
+        id: task-def
+        run: |
+          cat <<EOF > task-def.json
+          {
+            "family": "${{ env.ECR_REPO_NAME }}",
+            "networkMode": "awsvpc",
+            "executionRoleArn": "arn:aws:iam::286005182086:role/ecsTaskExecutionRole",
+            "containerDefinitions": [
+              {
+                "name": "${{ env.CONTAINER_NAME }}",
+                "image": "${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPO_NAME }}:latest",
+                "portMappings": [
+                  {
+                    "containerPort": 4000,
+                    "hostPort": 4000,
+                    "protocol": "tcp"
+                  }
+                ],
+                "essential": true
+              }
+            ],
+            "requiresCompatibilities": ["FARGATE"],
+            "cpu": "256",
+            "memory": "512"
+          }
+          EOF
+
+      - name: Register ECS Task Definition
+        id: register-task-def
+        run: |
+          aws ecs register-task-definition \
+            --cli-input-json file://task-def.json
+
+      - name: Update ECS Service to use latest Task Definition
+        run: |
+          NEW_TASK_DEF_ARN=$(aws ecs describe-task-definition \
+            --task-definition ${{ env.ECR_REPO_NAME }} \
+            --query "taskDefinition.taskDefinitionArn" --output text)
+
+          aws ecs update-service \
+            --cluster ${{ env.ECS_CLUSTER }} \
+            --service ${{ env.ECS_SERVICE }} \
+            --task-definition $NEW_TASK_DEF_ARN \
+            --force-new-deployment
