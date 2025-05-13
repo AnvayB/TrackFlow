@@ -146,12 +146,12 @@ export default function OrderManager() {
     // Merge form sections into one payload
     const fullOrder = {
       ...form,
-      product: form.product, // Use form.product instead of productFormData
-      payment: form.payment, // Use form.payment instead of paymentFormData
+      product: form.product,
+      payment: form.payment,
     };
 
     try {
-      console.log('Submitting form data:', JSON.stringify(fullOrder, null, 2));
+      console.log('Submitting order:', JSON.stringify(fullOrder, null, 2));
 
       if (editingId) {
         const response = await axios.put(`${ORDER_API}/${editingId}`, fullOrder);
@@ -320,7 +320,7 @@ export default function OrderManager() {
           {error && <div className="error-message">{error}</div>}
           {loading && <div className="loading-indicator">Loading...</div>}
           
-          <form>
+          <form onSubmit={handleSubmit}>
             <h3>Customer Information</h3>
             <input 
               name="firstName" 
@@ -497,12 +497,45 @@ export default function OrderManager() {
             </select>
             
             <div className="form-actions">
-              <button type="submit" disabled={loading} onClick={handleTestSubmit}>
+              <button type="submit" disabled={loading}>
                 {editingId ? 'Update Order' : 'Create Order'}
               </button>
               
               {editingId && (
-                <button type="button" onClick={() => setEditingId(null)}>
+                <button 
+                  type="button" 
+                  onClick={() => {
+                    setEditingId(null);
+                    // Reset form to initial state
+                    setForm({
+                      firstName: '',
+                      lastName: '',
+                      email: '',
+                      address: '',
+                      city: '',
+                      state: '',
+                      country: '',
+                      zipCode: '',
+                      phoneNumber: '',
+                      status: 'received',
+                      product: '',
+                      price: '',
+                      shippingCost: '',
+                      payment: {
+                        cardFirstName: '',
+                        cardLastName: '',
+                        billingAddress: '',
+                        billingCity: '',
+                        billingState: '',
+                        billingCountry: '',
+                        billingZipCode: '',
+                        cardNumber: '',
+                        securityNumber: '',
+                        expDate: ''
+                      }
+                    });
+                  }}
+                >
                   Cancel Edit
                 </button>
               )}
