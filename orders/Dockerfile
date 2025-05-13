@@ -3,10 +3,7 @@ FROM node:18-alpine
 WORKDIR /usr/src/app
 
 # Install AWS CLI for potential IAM credential management (optional)
-RUN apk add --no-cache python3 py3-pip && \
-    pip3 install --upgrade pip && \
-    pip3 install --no-cache-dir awscli && \
-    rm -rf /var/cache/apk/*
+RUN apk add --no-cache python3 py3-pip aws-cli
 
 # Copy package files and install dependencies
 COPY package*.json ./
