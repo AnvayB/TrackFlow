@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import axios from 'axios';
 import './Orders.css';
@@ -213,14 +214,14 @@ export default function OrderManager() {
               <option>Out for Delivery</option>
               <option>Delivered</option>
             </select>
-            <button type="submit">{editingId ? 'Update' : 'Add'} Order</button>
+            {editingId && <button type="submit">Update</button>}
           </form>
           <ul>
             {orders.map(order => (
               <li key={order.id} className="order-item">
                 <div className="order-header">
                   <strong>ID #{order.id}: {order.customerName}</strong>
-                  <span className="status-badge">{order.status}</span>
+                  <span className="status-badge">&nbsp;[{order.status}]</span>
                 </div>
                 <div className="order-details">
                   <div className="customer-info">
@@ -228,7 +229,7 @@ export default function OrderManager() {
                     <p>Address: {order.address}</p>
                   </div>
                   
-                  {order.product && (
+                  {/* {order.product && (
                     <div className="product-info">
                       <h4>Product Details</h4>
                       <p>Name: {order.product.productName}</p>
@@ -243,7 +244,7 @@ export default function OrderManager() {
                       <p>Card Number: {maskCardNumber(order.payment.cardNumber)}</p>
                       <p>Billing: {order.payment.billingCity}, {order.payment.billingState}, {order.payment.billingCountry}</p>
                     </div>
-                  )}
+                  )} */}
                 </div>
                 <div className="order-actions">
                   <button onClick={() => handleEdit(order)}>Edit</button>
@@ -253,8 +254,7 @@ export default function OrderManager() {
             ))}
           </ul>
         </section>
-
-        <section className="product-section">
+        <section className="product-section" style={{ paddingBottom: '0' }}>
           <h2>Products</h2>
           <form>
             <input
@@ -275,6 +275,9 @@ export default function OrderManager() {
             />
           </form>
         </section>
+        <div className="submit-button-container" style={{ marginTop: '0' }}>
+        <button type="button" onClick={handleSubmitAll}>Submit All</button>
+      </div>
       </div>
 
       <section className="payment-section">
@@ -292,10 +295,7 @@ export default function OrderManager() {
           <input type="date" name="expirationDate" placeholder="MM/YY" value={paymentFormData.expirationDate} onChange={handlePaymentChange} required />
         </form>
       </section>
-
-      <div className="submit-button-container" style={{ marginTop: '2rem' }}>
-        <button type="button" onClick={handleSubmitAll}>Submit All</button>
       </div>
-    </div>
+      
   );
 }

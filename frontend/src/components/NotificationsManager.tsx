@@ -2,11 +2,32 @@ import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import axios from 'axios';
 import './Notifications.css';
 
+interface ProductFormData {
+  productName: string;
+  productPrice: string;
+}
+
+interface PaymentFormData {
+  cardFirstName: string;
+  cardLastName: string;
+  billingAddress: string;
+  billingCity: string;
+  billingState: string;
+  billingCountry: string;
+  billingZipCode: string;
+  cardNumber: string;
+  securityNumber: string;
+  expirationDate: string;
+}
+
 interface Order {
   id: number;
   customerName: string;
   email: string;
   status: string;
+  address?: string;
+  product?: ProductFormData;
+  payment?: PaymentFormData;
 }
 
 const ORDER_API = 'http://localhost:3001/orders';
@@ -38,20 +59,17 @@ export default function NotificationsManager() {
     if (!selectedOrder) return;
 
     try {
-      // Update order status in database
       await axios.put(`${ORDER_API}/${selectedOrder.id}`, {
         ...selectedOrder,
         status: newStatus
       });
 
-      // Send email notification
       await axios.post(`${ORDER_API}/notify`, {
         orderId: selectedOrder.id,
         email: selectedOrder.email,
         status: newStatus
       });
 
-      // Reset form and refresh orders
       setSelectedOrder(null);
       setNewStatus('Received');
       fetchOrders();
@@ -61,6 +79,12 @@ export default function NotificationsManager() {
       console.error('Error updating status:', error);
       alert('Failed to update status and send notification');
     }
+  };
+
+  const maskCardNumber = (cardNumber: string) => {
+    if (!cardNumber) return 'N/A';
+    const last4 = cardNumber.slice(-4);
+    return `xxxx-xxxx-xxxx-${last4}`;
   };
 
   return (
@@ -111,9 +135,31 @@ export default function NotificationsManager() {
       {selectedOrder && (
         <div className="selected-order-info">
           <h3>Selected Order Details:</h3>
-          <p>Customer: {selectedOrder.customerName}</p>
-          <p>Email: {selectedOrder.email}</p>
-          <p>Current Status: {selectedOrder.status}</p>
+          <h4><u>Customer Details</u></h4>
+          <p><strong>Name:</strong> {selectedOrder.customerName}</p>
+          <p><strong>Email:</strong> {selectedOrder.email}</p>
+          <p><strong>Status:</strong> {selectedOrder.status}</p>
+          <p><strong>Address:</strong> {selectedOrder.address}</p>
+
+          {selectedOrder.product && (
+            <div className="notification-product-details">
+              <h4><u>Product Details</u></h4>
+              <p><strong>Product Name:</strong> {selectedOrder.product.productName}</p>
+              <p><strong>Price:</strong> ${selectedOrder.product.productPrice}</p>
+            </div>
+          )}
+
+          {selectedOrder.payment && (
+            <div className="notification-payment-details">
+              <h4><u>Payment Details</u></h4>
+              <p><strong>Card Holder:</strong> {selectedOrder.payment.cardFirstName} {selectedOrder.payment.cardLastName}</p>
+              <p><strong>Billing Address:</strong> {selectedOrder.payment.billingAddress}</p>
+              <p><strong>City/State/Country:</strong> {selectedOrder.payment.billingCity}, {selectedOrder.payment.billingState}, {selectedOrder.payment.billingCountry}</p>
+              <p><strong>Zip Code:</strong> {selectedOrder.payment.billingZipCode}</p>
+              <p><strong>Card Number:</strong> {maskCardNumber(selectedOrder.payment.cardNumber)}</p>
+              <p><strong>Expiration Date:</strong> {selectedOrder.payment.expirationDate}</p>
+            </div>
+          )}
         </div>
       )}
     </section>
