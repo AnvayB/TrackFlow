@@ -372,7 +372,7 @@ async function generateInvoice(orderId) {
 
 // Routes
 // 0. Root route to provide API information
-app.get('/', (req, res) => {
+app.get('/orders', (req, res) => {
   res.status(200).json({
     message: 'Orders microservice is running',
     environment: isDevelopment ? 'development' : 'production',
@@ -514,7 +514,7 @@ app.post('/orders', orderValidationRules, async (req, res) => {
 });
 
 // 3. Get all orders
-app.get('/orders', async (req, res) => {
+app.get('/orders/all', async (req, res) => {
   try {
     const orders = await orderStorage.list();
     res.status(200).json(orders);

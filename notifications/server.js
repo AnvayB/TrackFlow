@@ -21,7 +21,7 @@ async function sendNotification(orderId, customerEmail, status) {
 }
 
 // POST /notify — called by your order service
-app.post('/notify', async (req, res) => {
+app.post('/notifications/notify', async (req, res) => {
   const { orderId, customerEmail, status } = req.body;
   if (!orderId || !customerEmail || !status) {
     return res

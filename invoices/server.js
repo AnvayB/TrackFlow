@@ -65,7 +65,7 @@ if (!fs.existsSync(EXPORTS_DIR)) {
 }
 
 // Root route to provide API information
-app.get('/', (req, res) => {
+app.get('/invoices', (req, res) => {
   res.status(200).json({
     message: 'Invoices microservice is running',
     environment: isDevelopment ? 'development' : 'production',
