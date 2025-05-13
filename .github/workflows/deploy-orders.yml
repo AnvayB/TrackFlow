@@ -16,7 +16,7 @@ jobs:
       contents: read
 
     env:
-      AWS_REGION: us-east-1
+      AWS_REGION: us-east-2
       ECR_REPO_NAME: trackflow-orders
       ECS_CLUSTER: trackflow-cluster
       ECS_SERVICE: orders-service
