@@ -479,7 +479,7 @@ app.put('/orders/:orderId', orderValidationRules, async (req, res) => {
     const taxRate = 0.08; // 8% tax rate (can be made configurable)
     const taxAmount = productPrice * taxRate;
     const totalCost = productPrice + shippingCost + taxAmount;
-
+    
     // Prepare updated order data
     const updatedOrderData = {
       firstName: req.body.firstName,

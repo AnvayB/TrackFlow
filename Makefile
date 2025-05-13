@@ -6,18 +6,33 @@ add:
 
 # git commit -m "message"
 
+# Only for Anvay
+anvay:
+	git push origin anvay
 main:
+	git checkout main
 	git pull origin main
+	git checkout anvay
 
 # Start and Stop the application
 start:
 	cd orders && node server.js & \
-	cd verification && node server.js & \
+	cd invoices && node server.js & \
 	cd frontend && npm run dev
 
 stop:
 	@pkill -f "node server.js" || true
 	@pkill -f "npm run dev" || true
+
+restart:
+	make stop
+	make start
+
+# Install all dependencies
+install-all:
+	for dir in invoices orders notifications; do \
+		(cd $$dir && npm install); \
+	done
 
 
 # Start and Stop the application with Docker
