@@ -38,6 +38,13 @@ interface Order {
   updatedAt?: string;
 }
 
+// Add error response type
+interface ErrorResponse {
+  error?: string;
+  errors?: Array<{ msg: string }>;
+  status?: number;
+}
+
 const ORDER_API = 'http://localhost:3001/orders';
 
 export default function OrderManager() {
@@ -72,6 +79,23 @@ export default function OrderManager() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  // Add missing state variables
+  const [productFormData, setProductFormData] = useState<{ productName: string; productPrice: string }>({
+    productName: '',
+    productPrice: ''
+  });
+  const [paymentFormData, setPaymentFormData] = useState<Order['payment']>({
+    cardFirstName: '',
+    cardLastName: '',
+    billingAddress: '',
+    billingCity: '',
+    billingState: '',
+    billingCountry: '',
+    billingZipCode: '',
+    cardNumber: '',
+    securityNumber: '',
+    expDate: ''
+  });
 
   useEffect(() => {
     fetchOrders();
@@ -118,23 +142,27 @@ export default function OrderManager() {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    
+
+    // Merge form sections into one payload
+    const fullOrder = {
+      ...form,
+      product: form.product, // Use form.product instead of productFormData
+      payment: form.payment, // Use form.payment instead of paymentFormData
+    };
+
     try {
-      // Log the form data for debugging
-      console.log('Submitting form data:', JSON.stringify(form, null, 2));
-      
+      console.log('Submitting form data:', JSON.stringify(fullOrder, null, 2));
+
       if (editingId) {
-        // Update existing order
-        const response = await axios.put(`${ORDER_API}/${editingId}`, form);
+        const response = await axios.put(`${ORDER_API}/${editingId}`, fullOrder);
         console.log('Order updated:', response.data);
         setEditingId(null);
       } else {
-        // Create new order
-        const response = await axios.post(ORDER_API, form);
+        const response = await axios.post(ORDER_API, fullOrder);
         console.log('Order created:', response.data);
       }
-      
-      // Reset form
+
+      // Reset form with proper type
       setForm({
         firstName: '',
         lastName: '',
@@ -162,25 +190,24 @@ export default function OrderManager() {
           expDate: ''
         }
       });
-      
-      // Refresh orders list
+
       fetchOrders();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error submitting order:', error);
-      
-      // Log more detailed error information
-      if (error.response) {
-        console.error('Error response data:', error.response.data);
-        console.error('Error response status:', error.response.status);
-        
-        if (error.response.data && error.response.data.errors) {
-          const errorMessages = error.response.data.errors.map((err: any) => err.msg).join(', ');
+      const axiosError = error as { response?: { data: ErrorResponse; status: number } };
+
+      if (axiosError.response) {
+        console.error('Error response data:', axiosError.response.data);
+        console.error('Error response status:', axiosError.response.status);
+
+        if (axiosError.response.data?.errors) {
+          const errorMessages = axiosError.response.data.errors.map(err => err.msg).join(', ');
           setError(`Failed to submit order: ${errorMessages}`);
         } else {
-          setError(`Failed to submit order: ${error.response.data.error || 'Unknown error'}`);
+          setError(`Failed to submit order: ${axiosError.response.data?.error || 'Unknown error'}`);
         }
       } else {
-        setError(`Failed to submit order: ${error.message || 'Unknown error'}`);
+        setError(`Failed to submit order: ${error instanceof Error ? error.message : 'Unknown error'}`);
       }
     } finally {
       setLoading(false);
@@ -251,48 +278,32 @@ export default function OrderManager() {
     }
   };
 
-  // Test function to create a sample order
   const handleTestSubmit = async () => {
     try {
-      // Create a minimal test order
       const testOrder = {
-        firstName: "Test",
-        lastName: "User",
-        email: "test@example.com",
-        phoneNumber: "123-456-7890",
-        address: "123 Test St",
-        city: "Test City",
-        state: "TS",
-        country: "USA",
-        zipCode: "12345",
-        payment: {
-          cardFirstName: "Test",
-          cardLastName: "User",
-          billingAddress: "123 Test St",
-          billingCity: "Test City",
-          billingState: "TS",
-          billingCountry: "USA",
-          billingZipCode: "12345",
-          cardNumber: "4111111111111111",
-          securityNumber: "123",
-          expDate: "12/25"
-        },
-        product: "Test Product",
-        price: 99.99,
-        shippingCost: 10.00,
-        status: "received"
+        ...form,
+        product: form.product,
+        payment: form.payment,
       };
-      
-      console.log("Submitting test order:", testOrder);
+  
+      console.log("Submitting test order:", JSON.stringify(testOrder, null, 2));
       const response = await axios.post(ORDER_API, testOrder);
       console.log("Test order created successfully:", response.data);
       alert("Test order created successfully!");
       fetchOrders();
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error submitting test order:", error);
-      alert("Error creating test order. See console for details.");
+      const axiosError = error as { response?: { data: ErrorResponse; status: number } };
+      
+      if (axiosError.response) {
+        console.error("Error response data:", axiosError.response.data);
+        alert("Error: " + (axiosError.response.data?.error || "Check console for details."));
+      } else {
+        alert("Error creating test order. See console for details.");
+      }
     }
   };
+  
 
   // Mask credit card number for display
   const maskCardNumber = (cardNumber: string) => {
