@@ -15,7 +15,7 @@ const path = require('path');
 
 // Initialize Express
 const app = express();
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT || 3003;
 
 // Middleware
 app.use(bodyParser.json());
