@@ -348,6 +348,9 @@ export default function OrderManager() {
               name="phoneNumber" 
               value={form.phoneNumber} 
               onChange={handleChange} 
+              maxLength={10}
+              pattern="[0-9]*"
+              inputMode="numeric"
               placeholder="Phone Number" 
               required 
             />
@@ -441,6 +444,9 @@ export default function OrderManager() {
               name="payment.cardNumber" 
               value={form.payment.cardNumber} 
               onChange={handleChange} 
+              maxLength={16}
+              pattern="[0-9]*"
+              inputMode="numeric"
               placeholder="Card Number" 
               required 
             />
@@ -448,6 +454,9 @@ export default function OrderManager() {
               name="payment.securityNumber" 
               value={form.payment.securityNumber} 
               onChange={handleChange} 
+              maxLength={3}
+              pattern="[0-9]*"
+              inputMode="numeric"
               placeholder="Security Number" 
               required 
             />
