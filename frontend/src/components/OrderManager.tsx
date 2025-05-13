@@ -286,13 +286,13 @@ export default function OrderManager() {
         payment: form.payment,
       };
   
-      console.log("Submitting test order:", JSON.stringify(testOrder, null, 2));
+      console.log("Submitting order:", JSON.stringify(testOrder, null, 2));
       const response = await axios.post(ORDER_API, testOrder);
-      console.log("Test order created successfully:", response.data);
-      alert("Test order created successfully!");
+      console.log("Order created successfully:", response.data);
+      alert("Order created successfully!");
       fetchOrders();
     } catch (error: unknown) {
-      console.error("Error submitting test order:", error);
+      console.error("Error submitting order:", error);
       const axiosError = error as { response?: { data: ErrorResponse; status: number } };
       
       if (axiosError.response) {
@@ -320,7 +320,7 @@ export default function OrderManager() {
           {error && <div className="error-message">{error}</div>}
           {loading && <div className="loading-indicator">Loading...</div>}
           
-          <form onSubmit={handleSubmit}>
+          <form>
             <h3>Customer Information</h3>
             <input 
               name="firstName" 
@@ -506,10 +506,6 @@ export default function OrderManager() {
                   Cancel Edit
                 </button>
               )}
-              
-              {/* <button type="button" onClick={handleTestSubmit}>
-                Test Order Creation
-              </button> */}
             </div>
           </form>
           
