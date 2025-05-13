@@ -1,150 +1,241 @@
 
 /* Base Reset */
 body {
-    margin: 0;
-    padding: 0;
-  }
-  
-  /* Main Layout */
+  margin: 0;
+  padding: 0;
+}
+
+/* Main Layout */
+.order-management-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 2rem;
+  background-color: #f8f9fa;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Left Column (Orders) */
+.left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 900px;
+}
+
+/* Shared Section Styling */
+.order-section,
+.product-section {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Typography */
+h2 {
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #333;
+  font-size: 1.8rem;
+  margin-top: 0;
+  font-weight: 600;
+}
+
+h3 {
+  color: #0056b3;
+  font-size: 1.2rem;
+  margin: 1.5rem 0 0.75rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* Forms */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+input,
+select {
+  background-color: white !important;
+  color: #333;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #0066cc;
+  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+}
+
+input:-webkit-autofill {
+  background-color: white !important; /* Light blue */
+  color: #000000 !important;            /* Black text */
+  -webkit-text-fill-color: #000000 !important;
+  transition: background-color 5000s ease-in-out 0s; /* Prevent flash */
+}
+
+input:-webkit-autofill:focus {
+  background-color: white !important; /* Slightly darker on focus */
+}
+
+
+/* Buttons */
+button {
+  width: fit-content;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Action groups */
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 1rem;
+}
+
+/* Lists */
+.orders-list {
+  margin-top: 2rem;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 1rem;
+}
+
+.order-item {
+  background-color: #f0f7ff;
+  border: 1px solid #d0e3ff;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  color: black;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.order-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.order-header strong {
+  font-size: 1.1rem;
+  color: #0056b3;
+}
+
+.status-badge {
+  background-color: #e2f3f5;
+  color: #007bff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  margin-left: 0.5rem;
+}
+
+.order-details {
+  margin-bottom: 1rem;
+}
+
+.order-details p {
+  margin: 0.35rem 0;
+  font-size: 0.95rem;
+}
+
+.order-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.order-actions button {
+  margin: 0;
+  font-size: 0.9rem;
+  padding: 0.4rem 0.8rem;
+}
+
+.order-actions button:nth-child(1) {
+  background-color: #28a745;
+}
+
+.order-actions button:nth-child(2) {
+  background-color: #dc3545;
+}
+
+.order-actions button:nth-child(3) {
+  background-color: #17a2b8;
+}
+
+.order-actions button:hover {
+  opacity: 0.9;
+}
+
+/* Error and loading states */
+.error-message {
+  color: #dc3545;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.loading-indicator {
+  color: #0066cc;
+  text-align: center;
+  padding: 1rem;
+  font-style: italic;
+}
+
+/* Responsive Tweaks */
+@media (max-width: 768px) {
   .order-management-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 20px;
-    padding: 2rem;
-    background-color: #ffffff;
-    /* border-radius: 8px; */
-    width: 100%;
-    box-sizing: border-box;
-  }
-  
-  /* Left Column (Orders + Products) */
-  .left-column {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 48%;
-  }
-  
-  /* Right Column (Payment) */
-  .payment-section {
-    width: 48%;
-    background-color: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    padding: 20px;
-    box-sizing: border-box;
-  }
-  
-  /* Shared Section Styling */
-  .order-section,
-  .product-section,
-  .payment-section {
-    background-color: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    padding: 20px;
-  }
-  
-  /* Typography */
-  h2 {
-    margin-bottom: 1rem;
-    text-align: center;
-    color: #333;
-    font-size: 1.5rem;
-    margin-top: 0;
-  }
-  
-  /* Forms */
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-  
-  input,
-  select {
-    background-color: white;
-    color: black;
-    padding: 0.5rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-  
-  input:focus,
-  select:focus {
-    outline: none;
-    border-color: #0066cc;
-    box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
-  }
-  
-  /* Buttons */
-  button {
-    width: fit-content;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
-  .submit-button-container {
-    display: flex;
-    justify-content: flex-end;
-  }
-  
-  /* Lists */
-  ul {
-    list-style-type: none;
-    padding: 0;
-    margin-top: 1rem;
-  }
-  
-  li {
-    background-color: #e9f2ff;
-    border: 1px solid #d0e3ff;
-    border-radius: 5px;
     padding: 1rem;
-    margin-bottom: 1rem;
-    color: black;
   }
   
-  li strong {
-    color: #333;
+  .left-column {
+    width: 100%;
   }
   
-  li button {
-    margin-left: 0.5rem;
-    background-color: #28a745;
+  h2 {
+    font-size: 1.5rem;
   }
   
-  li button:last-child {
-    background-color: #dc3545;
+  .order-actions {
+    flex-direction: column;
+    align-items: flex-start;
   }
   
-  li button:hover {
-    opacity: 0.9;
+  .order-actions button {
+    width: 100%;
+    margin-bottom: 0.5rem;
   }
-  
-  /* Responsive Tweak */
-  @media (max-width: 768px) {
-    .order-management-container {
-      flex-direction: column;
-    }
-  
-    .left-column,
-    .payment-section {
-      width: 100%;
-    }
-  }
-  
+}

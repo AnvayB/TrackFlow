@@ -66,3 +66,153 @@ body {
   li {
     background-color: #e9f2ff
   }
+
+  /* Base styles */
+  .invoice-manager {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Search bar styles */
+  .search-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .search-bar input {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    background-color: white !important;
+    color: black !important;
+  }
+
+  .search-bar input::placeholder {
+    color: #666;
+  }
+
+  .search-bar input:focus {
+    outline: none;
+    border-color: #0066cc;
+    box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+  }
+
+  /* Order list styles */
+  .orders-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .order-item {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    padding: 1rem;
+  }
+
+  .order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .order-summary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .order-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .generate-invoice-btn,
+  .toggle-details-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    background-color: white !important;
+    color: black !important;
+    border: 1px solid #ccc;
+  }
+
+  .generate-invoice-btn:hover,
+  .toggle-details-btn:hover {
+    background-color: #f0f0f0 !important;
+  }
+
+  .generate-invoice-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .order-details {
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+
+  .customer-info,
+  .order-info,
+  .payment-info {
+    margin-bottom: 1rem;
+  }
+
+  .customer-info h4,
+  .order-info h4,
+  .payment-info h4 {
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+  }
+
+  .customer-info p,
+  .order-info p,
+  .payment-info p {
+    margin: 0.25rem 0;
+    color: #333;
+  }
+
+  /* Error and loading states */
+  .error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+  }
+
+  .loading-indicator {
+    text-align: center;
+    padding: 1rem;
+    color: #666;
+  }
+
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .search-bar {
+      flex-direction: column;
+    }
+    
+    .order-header {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .order-actions {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }

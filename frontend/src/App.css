@@ -41,3 +41,13 @@ body {
   justify-content: center;
   gap: 10px;
 }
+
+a {
+  cursor: pointer;
+  color: white;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: white;
+}

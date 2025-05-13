@@ -4,7 +4,7 @@ import './App.css';
 
 import OrderManager from './components/OrderManager';
 import InvoiceManager from './components/InvoiceManager';
-import NotificationsManager from './components/NotificationsManager';
+// import NotificationsManager from './components/NotificationsManager';
 
 interface Tab {
   title: string;
@@ -15,7 +15,7 @@ export default function App() {
   const tabs: Tab[] = [
     { title: 'Orders', component: <OrderManager /> },
     { title: 'Invoices', component: <InvoiceManager /> },
-    { title: 'Notifications', component: <NotificationsManager /> },
+    // { title: 'Notifications', component: <NotificationsManager /> },
   ];
 
   const [activeTab, setActiveTab] = useState(tabs[0].title);
@@ -29,7 +29,7 @@ export default function App() {
     <Router>
       <div className="App">
         <header className="App-header">
-          <h1><a href="/">TrackFlow</a></h1>
+          <a href="/"><h1><b>TrackFlow</b></h1></a>
         </header>
         <main className="App-content">
           <div className="dashboard-wrapper">
