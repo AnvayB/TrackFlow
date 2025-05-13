@@ -1,4 +1,3 @@
-
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import axios from 'axios';
 import './Orders.css';
@@ -9,6 +8,8 @@ interface Order {
   email: string;
   address: string;
   status: string;
+  product?: ProductFormData;
+  payment?: PaymentFormData;
 }
 
 interface ProductFormData {
@@ -64,7 +65,6 @@ export default function OrderManager() {
       setOrders(res.data);
     } catch (error) {
       console.error('Failed to fetch orders:', error);
-      // Using empty array as fallback if API is not available
       setOrders([]);
     }
   };
@@ -75,18 +75,68 @@ export default function OrderManager() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const fullOrder = {
+      ...form,
+      product: productFormData,
+      payment: paymentFormData,
+    };
+    
     if (editingId) {
-      await axios.put(`${ORDER_API}/${editingId}`, form);
+      await axios.put(`${ORDER_API}/${editingId}`, fullOrder);
       setEditingId(null);
     } else {
-      await axios.post(ORDER_API, form);
+      await axios.post(ORDER_API, fullOrder);
     }
+    
     setForm({ customerName: '', email: '', address: '', status: 'Pending' });
+    setProductFormData({ productName: '', productPrice: '' });
+    setPaymentFormData({
+      cardFirstName: '',
+      cardLastName: '',
+      billingAddress: '',
+      billingCity: '',
+      billingState: '',
+      billingCountry: '',
+      billingZipCode: '',
+      cardNumber: '',
+      securityNumber: '',
+      expirationDate: '',
+    });
+    
     fetchOrders();
   };
 
   const handleEdit = (order: Order) => {
-    setForm(order);
+    setForm({
+      customerName: order.customerName,
+      email: order.email,
+      address: order.address,
+      status: order.status
+    });
+    
+    if (order.product) {
+      setProductFormData(order.product);
+    } else {
+      setProductFormData({ productName: '', productPrice: '' });
+    }
+    
+    if (order.payment) {
+      setPaymentFormData(order.payment);
+    } else {
+      setPaymentFormData({
+        cardFirstName: '',
+        cardLastName: '',
+        billingAddress: '',
+        billingCity: '',
+        billingState: '',
+        billingCountry: '',
+        billingZipCode: '',
+        cardNumber: '',
+        securityNumber: '',
+        expirationDate: '',
+      });
+    }
+    
     setEditingId(order.id);
   };
 
@@ -103,14 +153,49 @@ export default function OrderManager() {
     setPaymentFormData({ ...paymentFormData, [e.target.name]: e.target.value });
   };
 
-  const handleProductSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    console.log('Product submitted:', productFormData);
+  const handleSubmitAll = async () => {
+    try {
+      const fullOrder = {
+        ...form,
+        product: productFormData,
+        payment: paymentFormData,
+      };
+
+      if (editingId) {
+        await axios.put(`${ORDER_API}/${editingId}`, fullOrder);
+        setEditingId(null);
+      } else {
+        await axios.post(ORDER_API, fullOrder);
+      }
+
+      // Reset all
+      setForm({ customerName: '', email: '', address: '', status: 'Pending' });
+      setProductFormData({ productName: '', productPrice: '' });
+      setPaymentFormData({
+        cardFirstName: '',
+        cardLastName: '',
+        billingAddress: '',
+        billingCity: '',
+        billingState: '',
+        billingCountry: '',
+        billingZipCode: '',
+        cardNumber: '',
+        securityNumber: '',
+        expirationDate: '',
+      });
+
+      fetchOrders();
+      alert('All data submitted successfully.');
+    } catch (error) {
+      console.error('Submit All failed:', error);
+    }
   };
 
-  const handlePaymentSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    console.log('Payment submitted:', paymentFormData);
+  // Mask credit card number for display
+  const maskCardNumber = (cardNumber: string) => {
+    if (!cardNumber) return '';
+    const last4 = cardNumber.slice(-4);
+    return `xxxx-xxxx-xxxx-${last4}`;
   };
 
   return (
@@ -128,20 +213,42 @@ export default function OrderManager() {
               <option>Out for Delivery</option>
               <option>Delivered</option>
             </select>
-            <button type="submit"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.currentTarget.form?.requestSubmit();
-                }
-              }}
-            >{editingId ? 'Update' : 'Add'} Order</button>
+            <button type="submit">{editingId ? 'Update' : 'Add'} Order</button>
           </form>
           <ul>
             {orders.map(order => (
-              <li key={order.id}>
-                <strong>ID #{order.id}: {order.customerName}</strong>  <br />- {order.email} <br />- {order.address} <br />[{order.status}]
-                <button onClick={() => handleEdit(order)}>Edit</button>
-                <button onClick={() => handleDelete(order.id)}>Delete</button>
+              <li key={order.id} className="order-item">
+                <div className="order-header">
+                  <strong>ID #{order.id}: {order.customerName}</strong>
+                  <span className="status-badge">{order.status}</span>
+                </div>
+                <div className="order-details">
+                  <div className="customer-info">
+                    <p>Email: {order.email}</p>
+                    <p>Address: {order.address}</p>
+                  </div>
+                  
+                  {order.product && (
+                    <div className="product-info">
+                      <h4>Product Details</h4>
+                      <p>Name: {order.product.productName}</p>
+                      <p>Price: ${order.product.productPrice}</p>
+                    </div>
+                  )}
+                  
+                  {order.payment && (
+                    <div className="payment-info">
+                      <h4>Payment Details</h4>
+                      <p>Card: {order.payment.cardFirstName} {order.payment.cardLastName}</p>
+                      <p>Card Number: {maskCardNumber(order.payment.cardNumber)}</p>
+                      <p>Billing: {order.payment.billingCity}, {order.payment.billingState}, {order.payment.billingCountry}</p>
+                    </div>
+                  )}
+                </div>
+                <div className="order-actions">
+                  <button onClick={() => handleEdit(order)}>Edit</button>
+                  <button onClick={() => handleDelete(order.id)}>Delete</button>
+                </div>
               </li>
             ))}
           </ul>
@@ -149,7 +256,7 @@ export default function OrderManager() {
 
         <section className="product-section">
           <h2>Products</h2>
-          <form onSubmit={handleProductSubmit}>
+          <form>
             <input
               type="text"
               name="productName"
@@ -166,20 +273,13 @@ export default function OrderManager() {
               onChange={handleProductChange}
               required
             />
-            <button type="submit"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.currentTarget.form?.requestSubmit();
-                }
-              }}
-            >Add Product</button>
           </form>
         </section>
       </div>
 
       <section className="payment-section">
         <h2>Payment</h2>
-        <form onSubmit={handlePaymentSubmit}>
+        <form>
           <input type="text" name="cardFirstName" placeholder="Card First Name" value={paymentFormData.cardFirstName} onChange={handlePaymentChange} required />
           <input type="text" name="cardLastName" placeholder="Card Last Name" value={paymentFormData.cardLastName} onChange={handlePaymentChange} required />
           <input type="text" name="billingAddress" placeholder="Billing Address" value={paymentFormData.billingAddress} onChange={handlePaymentChange} required />
@@ -190,11 +290,12 @@ export default function OrderManager() {
           <input type="number" name="cardNumber" placeholder="Card Number" value={paymentFormData.cardNumber} onChange={handlePaymentChange} required />
           <input type="number" name="securityNumber" placeholder="Security Number" value={paymentFormData.securityNumber} onChange={handlePaymentChange} required />
           <input type="date" name="expirationDate" placeholder="MM/YY" value={paymentFormData.expirationDate} onChange={handlePaymentChange} required />
-          <div className="submit-button-container">
-            <button type="submit">Submit Payment</button>
-          </div>
         </form>
       </section>
+
+      <div className="submit-button-container" style={{ marginTop: '2rem' }}>
+        <button type="button" onClick={handleSubmitAll}>Submit All</button>
+      </div>
     </div>
   );
 }
