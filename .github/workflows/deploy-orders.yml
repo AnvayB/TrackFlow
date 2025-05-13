@@ -53,6 +53,7 @@ jobs:
             "family": "${{ env.ECR_REPO_NAME }}",
             "networkMode": "awsvpc",
             "executionRoleArn": "arn:aws:iam::286005182086:role/ecsTaskExecutionRole",
+            "taskRoleArn": "arn:aws:iam::286005182086:role/ecsOrdersTaskRole",
             "containerDefinitions": [
               {
                 "name": "${{ env.CONTAINER_NAME }}",
@@ -67,7 +68,7 @@ jobs:
                 "essential": true,
                 "environment": [
                   { "name": "NODE_ENV", "value": "production" },
-                  { "name": "AWS_REGION", "value": "us-west-2" }
+                  { "name": "AWS_REGION", "value": "us-east-2" }
                 ]
               }
             ],
