@@ -9,6 +9,15 @@ add:
 # Only for Anvay
 anvay:
 	git push origin anvay
+
+thomas:
+	git push origin thomas
+
+maint:
+	git checkout main
+	git pull origin main
+	git checkout thomas
+
 main:
 	git checkout main
 	git pull origin main
