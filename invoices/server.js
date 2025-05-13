@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const PORT = 3001;
+const PORT = 3002;
 
 app.use(cors());
 app.use(express.json());
@@ -52,7 +52,6 @@ async function getOrderById(orderId) {
 
 
 app.listen(PORT, () => {
-  console.log(`✅ Server running at http://localhost:${PORT}`);
+  console.log(`Invoice server running at http://localhost:${PORT}`);
 });
 
-module.exports = { generateAndSendInvoice };

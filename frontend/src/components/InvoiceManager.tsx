@@ -105,16 +105,15 @@ export default function OrderSearch() {
       <button onClick={handleSearch}>Search</button>
 
       {hasSearched && orders.length === 0 && <p>No matching orders found.</p>}
-
       <ul className="invoice-order-list">
         {orders.map(order => (
           <li key={order.id} className="invoice-order-item">
             <div className="invoice-order-header">
               <div className="invoice-order-summary" onClick={() => toggleOrderDetails(order.id)}>
-                <span>
+                <span style={{ cursor: 'pointer' }}>
                   <strong>ID:</strong> {order.id} — <strong>Name:</strong> {order.customerName} — <strong>Email:</strong> {order.email || 'N/A'}
                 </span>
-                <span className="expand-icon">{expandedOrderId === order.id ? '▼' : '▶'}</span>
+                <span className="expand-icon" style={{ cursor: 'pointer' }}>&nbsp;<b>See Details</b> {expandedOrderId === order.id ? '▼' : '▶'}</span>
               </div>
               <button
                 className="export-button"
@@ -127,7 +126,7 @@ export default function OrderSearch() {
             {expandedOrderId === order.id && (
               <div className="invoice-order-details">
                 <div className="invoice-customer-details">
-                  <h4>Customer Details</h4>
+                  <h4><u>Customer Details</u></h4>
                   <p><strong>Name:</strong> {order.customerName}</p>
                   <p><strong>Email:</strong> {order.email || 'N/A'}</p>
                   <p><strong>Address:</strong> {order.address}</p>
@@ -136,7 +135,7 @@ export default function OrderSearch() {
                 
                 {order.product && (
                   <div className="invoice-product-details">
-                    <h4>Product Details</h4>
+                    <h4><u>Product Details</u></h4>
                     <p><strong>Product Name:</strong> {order.product.productName}</p>
                     <p><strong>Price:</strong> ${order.product.productPrice}</p>
                   </div>
@@ -144,12 +143,12 @@ export default function OrderSearch() {
                 
                 {order.payment && (
                   <div className="invoice-payment-details">
-                    <h4>Payment Details</h4>
+                    <h4><u>Payment Details</u></h4>
                     <p><strong>Card Holder:</strong> {order.payment.cardFirstName} {order.payment.cardLastName}</p>
-                    <p><strong>Card Number:</strong> {maskCardNumber(order.payment.cardNumber)}</p>
                     <p><strong>Billing Address:</strong> {order.payment.billingAddress}</p>
                     <p><strong>City/State/Country:</strong> {order.payment.billingCity}, {order.payment.billingState}, {order.payment.billingCountry}</p>
                     <p><strong>Zip Code:</strong> {order.payment.billingZipCode}</p>
+                    <p><strong>Card Number:</strong> {maskCardNumber(order.payment.cardNumber)}</p>
                     <p><strong>Expiration Date:</strong> {order.payment.expirationDate}</p>
                   </div>
                 )}
