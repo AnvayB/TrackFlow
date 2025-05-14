@@ -80,22 +80,22 @@ export default function OrderManager() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   // Add missing state variables
-  const [productFormData, setProductFormData] = useState<{ productName: string; productPrice: string }>({
-    productName: '',
-    productPrice: ''
-  });
-  const [paymentFormData, setPaymentFormData] = useState<Order['payment']>({
-    cardFirstName: '',
-    cardLastName: '',
-    billingAddress: '',
-    billingCity: '',
-    billingState: '',
-    billingCountry: '',
-    billingZipCode: '',
-    cardNumber: '',
-    securityNumber: '',
-    expDate: ''
-  });
+  // const [productFormData, setProductFormData] = useState<{ productName: string; productPrice: string }>({
+  //   productName: '',
+  //   productPrice: ''
+  // });
+  // const [paymentFormData, setPaymentFormData] = useState<Order['payment']>({
+  //   cardFirstName: '',
+  //   cardLastName: '',
+  //   billingAddress: '',
+  //   billingCity: '',
+  //   billingState: '',
+  //   billingCountry: '',
+  //   billingZipCode: '',
+  //   cardNumber: '',
+  //   securityNumber: '',
+  //   expDate: ''
+  // });
 
   useEffect(() => {
     fetchOrders();
@@ -104,7 +104,8 @@ export default function OrderManager() {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(ORDER_API);
+      // const res = await axios.get(ORDER_API);
+      const res = await axios.get(`${ORDER_API}/all`);
       console.log('Fetched orders:', res.data);
       setOrders(res.data);
       setError(null);
