@@ -1,6 +1,11 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import axios from 'axios';
 import './Orders.css';
+import { 
+  Package, Truck, ShoppingBag, CreditCard, User, 
+  Calendar, DollarSign, MapPin, RefreshCw, FileText, 
+  Edit, Trash2, AlertTriangle, CheckCircle
+} from 'lucide-react';
 
 interface Order {
   id?: number;
@@ -79,10 +84,23 @@ export default function OrderManager() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [activeFormTab, setActiveFormTab] = useState<string>('customer');
+  const [success, setSuccess] = useState<string | null>(null);
+  const [showCompletedAnimation, setShowCompletedAnimation] = useState<boolean>(false);
 
   useEffect(() => {
     fetchOrders();
   }, []);
+
+  useEffect(() => {
+    if (success) {
+      // Clear success message after 5 seconds
+      const timeout = setTimeout(() => {
+        setSuccess(null);
+      }, 5000);
+      
+      return () => clearTimeout(timeout);
+    }
+  }, [success]);
 
   const fetchOrders = async () => {
     try {
@@ -140,9 +158,13 @@ export default function OrderManager() {
         const response = await axios.put(`${ORDER_API}/${editingId}`, fullOrder);
         console.log('Order updated:', response.data);
         setEditingId(null);
+        setSuccess(`Order #${editingId} updated successfully`);
       } else {
         const response = await axios.post(ORDER_API, fullOrder);
         console.log('Order created:', response.data);
+        setSuccess(`New order created successfully`);
+        setShowCompletedAnimation(true);
+        setTimeout(() => setShowCompletedAnimation(false), 2000);
       }
 
       // Reset form with proper type
@@ -242,6 +264,7 @@ export default function OrderManager() {
         setLoading(true);
         console.log('Deleting order:', orderId);
         await axios.delete(`${ORDER_API}/${orderId}`);
+        setSuccess(`Order #${orderId} deleted successfully`);
         fetchOrders();
       } catch (error) {
         console.error('Error deleting order:', error);
@@ -258,7 +281,7 @@ export default function OrderManager() {
       console.log('Generating invoice for order:', orderId);
       const response = await axios.post(`${ORDER_API}/${orderId}/invoice`);
       console.log('Invoice generation response:', response.data);
-      alert('Invoice generated successfully!');
+      setSuccess(`Invoice for order #${orderId} generated successfully`);
     } catch (error) {
       console.error('Error generating invoice:', error);
       setError('Failed to generate invoice.');
@@ -270,6 +293,26 @@ export default function OrderManager() {
   // Function to get appropriate status badge class
   const getStatusBadgeClass = (status: string) => {
     return `status-badge status-${status.toLowerCase()}`;
+  };
+
+  // Get status icon based on status
+  const getStatusIcon = (status: string) => {
+    switch(status.toLowerCase()) {
+      case 'received':
+        return <Package size={18} />;
+      case 'processing':
+        return <RefreshCw size={18} />;
+      case 'shipped':
+        return <Package size={18} />;
+      case 'in-transit':
+        return <Truck size={18} />;
+      case 'delivered':
+        return <CheckCircle size={18} />;
+      case 'cancelled':
+        return <AlertTriangle size={18} />;
+      default:
+        return <Package size={18} />;
+    }
   };
 
   // Format currency for display
@@ -285,6 +328,19 @@ export default function OrderManager() {
     return formatCurrency((numPrice + numShipping) * 1.08); // Adding 8% tax
   };
 
+  // Format date for display
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   // Render form section based on active tab
   const renderFormSection = () => {
     switch (activeFormTab) {
@@ -292,108 +348,127 @@ export default function OrderManager() {
         return (
           <>
             <div className="form-section">
-              <h3>Customer Information</h3>
+              <h3><User className="section-icon" /> Customer Information</h3>
             </div>
             <div className="form-group">
               <label htmlFor="firstName">First Name</label>
-              <input 
-                id="firstName"
-                name="firstName" 
-                value={form.firstName} 
-                onChange={handleChange} 
-                placeholder="First Name" 
-                required 
-              />
+              <div className="input-wrapper">
+                <input 
+                  id="firstName"
+                  name="firstName" 
+                  value={form.firstName} 
+                  onChange={handleChange} 
+                  placeholder="First Name" 
+                  required 
+                />
+              </div>
             </div>
             <div className="form-group">
               <label htmlFor="lastName">Last Name</label>
-              <input 
-                id="lastName"
-                name="lastName" 
-                value={form.lastName} 
-                onChange={handleChange} 
-                placeholder="Last Name" 
-                required 
-              />
+              <div className="input-wrapper">
+                <input 
+                  id="lastName"
+                  name="lastName" 
+                  value={form.lastName} 
+                  onChange={handleChange} 
+                  placeholder="Last Name" 
+                  required 
+                />
+              </div>
             </div>
             <div className="form-group">
               <label htmlFor="email">Email</label>
-              <input 
-                id="email"
-                name="email" 
-                type="email" 
-                value={form.email} 
-                onChange={handleChange} 
-                placeholder="Email" 
-                required 
-              />
+              <div className="input-wrapper">
+                <input 
+                  id="email"
+                  name="email" 
+                  type="email" 
+                  value={form.email} 
+                  onChange={handleChange} 
+                  placeholder="Email" 
+                  required 
+                />
+              </div>
             </div>
             <div className="form-group">
               <label htmlFor="phoneNumber">Phone Number</label>
-              <input 
-                id="phoneNumber"
-                name="phoneNumber" 
-                type="tel"
-                value={form.phoneNumber} 
-                onChange={handleChange} 
-                placeholder="Phone Number" 
-                required 
-              />
+              <div className="input-wrapper">
+                <input 
+                  id="phoneNumber"
+                  name="phoneNumber" 
+                  type="tel"
+                  value={form.phoneNumber} 
+                  onChange={handleChange} 
+                  placeholder="Phone Number" 
+                  required 
+                />
+              </div>
             </div>
-            <div className="form-group">
+            <div className="form-group address-field">
               <label htmlFor="address">Address</label>
-              <input 
-                id="address"
-                name="address" 
-                value={form.address} 
-                onChange={handleChange} 
-                placeholder="Address" 
-                required 
-              />
+              <div className="input-wrapper">
+                <input 
+                  id="address"
+                  name="address" 
+                  value={form.address} 
+                  onChange={handleChange} 
+                  placeholder="Address" 
+                  required 
+                />
+                <MapPin className="input-icon" size={16} />
+              </div>
             </div>
             <div className="form-group">
               <label htmlFor="city">City</label>
-              <input 
-                id="city"
-                name="city" 
-                value={form.city} 
-                onChange={handleChange} 
-                placeholder="City" 
-                required 
-              />
+              <div className="input-wrapper">
+                <input 
+                  id="city"
+                  name="city" 
+                  value={form.city} 
+                  onChange={handleChange} 
+                  placeholder="City" 
+                  required 
+                />
+              </div>
             </div>
             <div className="form-group">
               <label htmlFor="state">State</label>
-              <input 
-                id="state"
-                name="state" 
-                value={form.state} 
-                onChange={handleChange} 
-                placeholder="State" 
-                required 
-              />
+              <div className="input-wrapper">
+                <input 
+                  id="state"
+                  name="state" 
+                  value={form.state} 
+                  onChange={handleChange} 
+                  placeholder="State" 
+                  required 
+                />
+              </div>
             </div>
             <div className="form-group">
               <label htmlFor="country">Country</label>
-              <input 
-                id="country"
-                name="country" 
-                value={form.country} 
-                onChange={handleChange} 
-                placeholder="Country" 
-                required 
-              />
+              <div className="input-wrapper">
+                <input 
+                  id="country"
+                  name="country" 
+                  value={form.country} 
+                  onChange={handleChange} 
+                  placeholder="Country" 
+                  required 
+                />
+              </div>
             </div>
             <div className="form-group">
               <label htmlFor="zipCode">Zip Code</label>
-              <input 
-                id="zipCode"
-                name="zipCode" 
-                value={form.zipCode} 
-                onChange={handleChange} 
-                placeholder="Zip Code" 
-                required 
-              />
+              <div className="input-wrapper">
+                <input 
+                  id="zipCode"
+                  name="zipCode" 
+                  value={form.zipCode} 
+                  onChange={handleChange} 
+                  placeholder="Zip Code" 
+                  required 
+                />
+              </div>
             </div>
           </>
         );
@@ -401,124 +476,147 @@ export default function OrderManager() {
         return (
           <>
             <div className="form-section">
-              <h3>Payment Information</h3>
+              <h3><CreditCard className="section-icon" /> Payment Information</h3>
             </div>
             <div className="form-group">
               <label htmlFor="payment.cardFirstName">Cardholder First Name</label>
-              <input 
-                id="payment.cardFirstName"
-                name="payment.cardFirstName" 
-                value={form.payment.cardFirstName} 
-                onChange={handleChange} 
-                placeholder="Cardholder First Name" 
-                required 
-              />
+              <div className="input-wrapper">
+                <input 
+                  id="payment.cardFirstName"
+                  name="payment.cardFirstName" 
+                  value={form.payment.cardFirstName} 
+                  onChange={handleChange} 
+                  placeholder="Cardholder First Name" 
+                  required 
+                />
+              </div>
             </div>
             <div className="form-group">
               <label htmlFor="payment.cardLastName">Cardholder Last Name</label>
-              <input 
-                id="payment.cardLastName"
-                name="payment.cardLastName" 
-                value={form.payment.cardLastName} 
-                onChange={handleChange} 
-                placeholder="Cardholder Last Name" 
-                required 
-              />
+              <div className="input-wrapper">
+                <input 
+                  id="payment.cardLastName"
+                  name="payment.cardLastName" 
+                  value={form.payment.cardLastName} 
+                  onChange={handleChange} 
+                  placeholder="Cardholder Last Name" 
+                  required 
+                />
+              </div>
             </div>
             <div className="form-group">
               <label htmlFor="payment.cardNumber">Card Number</label>
-              <input 
-                id="payment.cardNumber"
-                name="payment.cardNumber" 
-                value={form.payment.cardNumber} 
-                onChange={handleChange} 
-                maxLength={16}
-                pattern="[0-9]*"
-                inputMode="numeric"
-                placeholder="Card Number" 
-                required 
-              />
+              <div className="input-wrapper card-number">
+                <input 
+                  id="payment.cardNumber"
+                  name="payment.cardNumber" 
+                  value={form.payment.cardNumber} 
+                  onChange={handleChange} 
+                  maxLength={16}
+                  pattern="[0-9]*"
+                  inputMode="numeric"
+                  placeholder="Card Number" 
+                  required 
+                />
+                <CreditCard className="input-icon" size={16} />
+              </div>
             </div>
             <div className="form-group">
               <label htmlFor="payment.expDate">Expiration Date (MMYY)</label>
-              <input 
-                id="payment.expDate"
-                name="payment.expDate" 
-                maxLength={4}
-                value={form.payment.expDate} 
-                onChange={handleChange} 
-                placeholder="MMYY" 
-                required 
-              />
+              <div className="input-wrapper">
+                <input 
+                  id="payment.expDate"
+                  name="payment.expDate" 
+                  maxLength={4}
+                  value={form.payment.expDate} 
+                  onChange={handleChange} 
+                  placeholder="MMYY" 
+                  required 
+                />
+                <Calendar className="input-icon" size={16} />
+              </div>
             </div>
             <div className="form-group">
               <label htmlFor="payment.securityNumber">Security Code</label>
-              <input 
-                id="payment.securityNumber"
-                name="payment.securityNumber" 
-                value={form.payment.securityNumber} 
-                onChange={handleChange} 
-                maxLength={3}
-                pattern="[0-9]*"
-                inputMode="numeric"
-                placeholder="CVV" 
-                required 
-              />
+              <div className="input-wrapper">
+                <input 
+                  id="payment.securityNumber"
+                  name="payment.securityNumber" 
+                  value={form.payment.securityNumber} 
+                  onChange={handleChange} 
+                  maxLength={3}
+                  pattern="[0-9]*"
+                  inputMode="numeric"
+                  placeholder="CVV" 
+                  required 
+                />
+              </div>
             </div>
-            <div className="form-group">
+            <div className="form-group address-field">
               <label htmlFor="payment.billingAddress">Billing Address</label>
-              <input 
-                id="payment.billingAddress"
-                name="payment.billingAddress" 
-                value={form.payment.billingAddress} 
-                onChange={handleChange} 
-                placeholder="Billing Address" 
-                required 
-              />
+              <div className="input-wrapper">
+                <input 
+                  id="payment.billingAddress"
+                  name="payment.billingAddress" 
+                  value={form.payment.billingAddress} 
+                  onChange={handleChange} 
+                  placeholder="Billing Address" 
+                  required 
+                />
+                <MapPin className="input-icon" size={16} />
+              </div>
             </div>
             <div className="form-group">
               <label htmlFor="payment.billingCity">Billing City</label>
-              <input 
-                id="payment.billingCity"
-                name="payment.billingCity" 
-                value={form.payment.billingCity} 
-                onChange={handleChange} 
-                placeholder="Billing City" 
-                required 
-              />
+              <div className="input-wrapper">
+                <input 
+                  id="payment.billingCity"
+                  name="payment.billingCity" 
+                  value={form.payment.billingCity} 
+                  onChange={handleChange} 
+                  placeholder="Billing City" 
+                  required 
+                />
+              </div>
             </div>
             <div className="form-group">
               <label htmlFor="payment.billingState">Billing State</label>
-              <input 
-                id="payment.billingState"
-                name="payment.billingState" 
-                value={form.payment.billingState} 
-                onChange={handleChange} 
-                placeholder="Billing State" 
-                required 
-              />
+              <div className="input-wrapper">
+                <input 
+                  id="payment.billingState"
+                  name="payment.billingState" 
+                  value={form.payment.billingState} 
+                  onChange={handleChange} 
+                  placeholder="Billing State" 
+                  required 
+                />
+              </div>
             </div>
             <div className="form-group">
               <label htmlFor="payment.billingCountry">Billing Country</label>
-              <input 
-                id="payment.billingCountry"
-                name="payment.billingCountry" 
-                value={form.payment.billingCountry} 
-                onChange={handleChange} 
-                placeholder="Billing Country" 
-                required 
-              />
+              <div className="input-wrapper">
+                <input 
+                  id="payment.billingCountry"
+                  name="payment.billingCountry" 
+                  value={form.payment.billingCountry} 
+                  onChange={handleChange} 
+                  placeholder="Billing Country" 
+                  required 
+                />
+              </div>
             </div>
             <div className="form-group">
               <label htmlFor="payment.billingZipCode">Billing Zip Code</label>
-              <input 
-                id="payment.billingZipCode"
-                name="payment.billingZipCode" 
-                value={form.payment.billingZipCode} 
-                onChange={handleChange} 
-                placeholder="Billing Zip Code" 
-                required 
-              />
+              <div className="input-wrapper">
+                <input 
+                  id="payment.billingZipCode"
+                  name="payment.billingZipCode" 
+                  value={form.payment.billingZipCode} 
+                  onChange={handleChange} 
+                  placeholder="Billing Zip Code" 
+                  required 
+                />
+              </div>
             </div>
           </>
         );
@@ -526,66 +624,79 @@ export default function OrderManager() {
         return (
           <>
             <div className="form-section">
-              <h3>Product Information</h3>
+              <h3><ShoppingBag className="section-icon" /> Product Information</h3>
             </div>
             <div className="form-group">
               <label htmlFor="product">Product Name</label>
-              <input 
-                id="product"
-                name="product" 
-                value={form.product} 
-                onChange={handleChange} 
-                placeholder="Product Name" 
-                required 
-              />
+              <div className="input-wrapper">
+                <input 
+                  id="product"
+                  name="product" 
+                  value={form.product} 
+                  onChange={handleChange} 
+                  placeholder="Product Name" 
+                  required 
+                />
+              </div>
             </div>
             <div className="form-group">
               <label htmlFor="price">Price ($)</label>
-              <input 
-                id="price"
-                name="price" 
-                type="number" 
-                step="0.01" 
-                min="0.01" 
-                value={form.price} 
-                onChange={handleChange} 
-                placeholder="Price" 
-                required 
-              />
+              <div className="input-wrapper">
+                <input 
+                  id="price"
+                  name="price" 
+                  type="number" 
+                  step="0.01" 
+                  min="0.01" 
+                  value={form.price} 
+                  onChange={handleChange} 
+                  placeholder="Price" 
+                  required 
+                />
+                <DollarSign className="input-icon" size={16} />
+              </div>
             </div>
             <div className="form-group">
               <label htmlFor="shippingCost">Shipping Cost ($)</label>
-              <input 
-                id="shippingCost"
-                name="shippingCost" 
-                type="number" 
-                step="0.01" 
-                min="0" 
-                value={form.shippingCost} 
-                onChange={handleChange} 
-                placeholder="Shipping Cost" 
-                required 
-              />
+              <div className="input-wrapper">
+                <input 
+                  id="shippingCost"
+                  name="shippingCost" 
+                  type="number" 
+                  step="0.01" 
+                  min="0" 
+                  value={form.shippingCost} 
+                  onChange={handleChange} 
+                  placeholder="Shipping Cost" 
+                  required 
+                />
+                <Truck className="input-icon" size={16} />
+              </div>
             </div>
             <div className="form-group">
               <label htmlFor="status">Order Status</label>
-              <select 
-                id="status"
-                name="status" 
-                value={form.status} 
-                onChange={handleChange}
-              >
-                <option value="received">Received</option>
-                <option value="processing">Processing</option>
-                <option value="shipped">Shipped</option>
-                <option value="in-transit">In Transit</option>
-                <option value="delivered">Delivered</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
+              <div className="input-wrapper status-select">
+                <select 
+                  id="status"
+                  name="status" 
+                  value={form.status} 
+                  onChange={handleChange}
+                  className={`status-select-${form.status.toLowerCase()}`}
+                >
+                  <option value="received">Received</option>
+                  <option value="processing">Processing</option>
+                  <option value="shipped">Shipped</option>
+                  <option value="in-transit">In Transit</option>
+                  <option value="delivered">Delivered</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+                {getStatusIcon(form.status)}
+              </div>
             </div>
             
             {Number(form.price) > 0 && Number(form.shippingCost) >= 0 && (
               <div className="form-group order-summary">
+                <h4>Order Summary</h4>
                 <div className="summary-row">
                   <span>Subtotal:</span>
                   <span>{formatCurrency(form.price)}</span>
@@ -615,9 +726,29 @@ export default function OrderManager() {
     <div className="order-management-container">
       <div className="left-column">
         <section className="order-section">
-          <h2>Order Management System</h2>
+          <h2><Package className="title-icon" /> Order Management System</h2>
           
-          {error && <div className="error-message">{error}</div>}
+          {error && (
+            <div className="error-message">
+              <AlertTriangle className="message-icon" />
+              {error}
+            </div>
+          )}
+          
+          {success && (
+            <div className="success-message">
+              <CheckCircle className="message-icon" />
+              {success}
+            </div>
+          )}
+          
+          {showCompletedAnimation && (
+            <div className="success-animation">
+              <div className="checkmark-circle">
+                <div className="checkmark draw"></div>
+              </div>
+            </div>
+          )}
           
           <div className="form-tabs">
             <button 
@@ -625,6 +756,7 @@ export default function OrderManager() {
               onClick={() => setActiveFormTab('customer')}
               type="button"
             >
+              <User className="tab-icon" size={16} />
               Customer
             </button>
             <button 
@@ -632,6 +764,7 @@ export default function OrderManager() {
               onClick={() => setActiveFormTab('payment')}
               type="button"
             >
+              <CreditCard className="tab-icon" size={16} />
               Payment
             </button>
             <button 
@@ -639,11 +772,12 @@ export default function OrderManager() {
               onClick={() => setActiveFormTab('product')}
               type="button"
             >
+              <ShoppingBag className="tab-icon" size={16} />
               Product
             </button>
           </div>
           
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="order-form">
             {renderFormSection()}
             
             <div className="form-actions">
@@ -671,7 +805,14 @@ export default function OrderManager() {
                   className="success" 
                   disabled={loading}
                 >
-                  {editingId ? 'Update Order' : 'Create Order'}
+                  {loading ? (
+                    <>
+                      <div className="button-spinner"></div>
+                      Processing...
+                    </>
+                  ) : (
+                    editingId ? 'Update Order' : 'Create Order'
+                  )}
                 </button>
               )}
               
@@ -721,18 +862,26 @@ export default function OrderManager() {
             <h3>
               Recent Orders
               <button className="refresh-button secondary" onClick={fetchOrders} disabled={loading}>
+                <RefreshCw className="button-icon" size={16} />
                 Refresh
               </button>
             </h3>
             
-            {loading ? (
+            {loading && !orders.length ? (
               <div className="loading-indicator">
                 <div className="loading-spinner"></div>
                 Loading orders...
               </div>
             ) : orders.length === 0 ? (
               <div className="empty-state">
+                <Package size={48} className="empty-icon" />
                 <p>No orders found. Create your first order to get started.</p>
+                <button 
+                  className="primary" 
+                  onClick={() => setActiveFormTab('customer')}
+                >
+                  Create New Order
+                </button>
               </div>
             ) : (
               <div className="order-grid">
@@ -740,49 +889,78 @@ export default function OrderManager() {
                   <div key={order.orderId || order.id} className="order-item">
                     <div className="order-header">
                       <strong>#{order.orderId || order.id}</strong>
-                      <span className={getStatusBadgeClass(order.status)}>{order.status}</span>
+                      <span className={getStatusBadgeClass(order.status)}>
+                        {getStatusIcon(order.status)}
+                        {order.status}
+                      </span>
                     </div>
                     
                     <div className="order-content">
                       <div className="order-details">
-                        <p>
-                          <span className="label">Customer:</span>
-                          <span className="value">{order.firstName} {order.lastName}</span>
-                        </p>
-                        <p>
-                          <span className="label">Product:</span>
-                          <span className="value">{order.product}</span>
-                        </p>
-                        <p>
-                          <span className="label">Total:</span>
-                          <span className="value">{order.totalCost || calculateTotal(order.price, order.shippingCost)}</span>
-                        </p>
-                        <p>
-                          <span className="label">Date:</span>
-                          <span className="value">
-                            {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}
-                          </span>
-                        </p>
+                        <div className="order-customer">
+                          <div className="customer-avatar">
+                            {order.firstName?.charAt(0)}{order.lastName?.charAt(0)}
+                          </div>
+                          <div className="customer-info">
+                            <p className="customer-name">{order.firstName} {order.lastName}</p>
+                            <p className="customer-email">{order.email}</p>
+                          </div>
+                        </div>
+                        
+                        <div className="order-info-grid">
+                          <div className="order-info-item">
+                            <span className="label">Product:</span>
+                            <span className="value product-value">{order.product}</span>
+                          </div>
+                          <div className="order-info-item">
+                            <span className="label">Price:</span>
+                            <span className="value">{formatCurrency(order.price)}</span>
+                          </div>
+                          <div className="order-info-item">
+                            <span className="label">Shipping:</span>
+                            <span className="value">{formatCurrency(order.shippingCost)}</span>
+                          </div>
+                          <div className="order-info-item total-item">
+                            <span className="label">Total:</span>
+                            <span className="value price-total">{order.totalCost || calculateTotal(order.price, order.shippingCost)}</span>
+                          </div>
+                          <div className="order-info-item">
+                            <span className="label">Date:</span>
+                            <span className="value">{formatDate(order.createdAt)}</span>
+                          </div>
+                          <div className="order-info-item">
+                            <span className="label">Address:</span>
+                            <span className="value address-value">
+                              {`${order.address}, ${order.city}, ${order.state}`}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     
                     <div className="order-actions">
                       <button 
                         onClick={() => handleEdit(order)} 
-                        className="success"
+                        className="edit-button"
+                        title="Edit Order"
                       >
+                        <Edit size={16} />
                         Edit
                       </button>
                       <button 
                         onClick={() => handleDelete(order.orderId || '')} 
-                        className="danger"
+                        className="delete-button"
+                        title="Delete Order"
                       >
+                        <Trash2 size={16} />
                         Delete
                       </button>
                       <button 
                         onClick={() => handleGenerateInvoice(order.orderId || '')} 
-                        className="info"
+                        className="invoice-button"
+                        title="Generate Invoice"
                       >
+                        <FileText size={16} />
                         Invoice
                       </button>
                     </div>
