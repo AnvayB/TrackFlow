@@ -6,9 +6,13 @@ add:
 
 # git commit -m "message"
 
-# Only for Anvay
 anvay:
 	git push origin anvay
+
+main:
+	git checkout main
+	git pull origin main
+	git checkout anvay
 
 thomas:
 	git push origin thomas
@@ -17,11 +21,6 @@ maint:
 	git checkout main
 	git pull origin main
 	git checkout thomas
-
-main:
-	git checkout main
-	git pull origin main
-	git checkout anvay
 
 # Start and Stop the application
 start:
@@ -39,7 +38,7 @@ restart:
 
 # Install all dependencies
 install-all:
-	for dir in invoices orders notifications; do \
+	for dir in frontend invoices orders notifications; do \
 		(cd $$dir && npm install); \
 	done
 
