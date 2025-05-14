@@ -22,7 +22,7 @@ const app = express();
 const PORT = process.env.PORT || 3003;
 
 // Middleware
-app.use(bodyParser.json({ limit: '5mb' })); // Increased limit for larger orders
+app.use(bodyParser.json({ limit: '5mb' })); 
 app.use(cors());
 
 // Determine if we're in a development environment

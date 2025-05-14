@@ -1,53 +1,289 @@
-/* Header styling stays here */
+
+
+/* Header styling */
 .App-header {
-  background-color: #004aad;
+  background-color: #0a2463;
+  background-image: linear-gradient(to right, #0a2463, #1e50a2);
   color: white;
-  text-align: center;
   width: 100%;
-  height: 70px;
-  padding: 10px 0;
-  /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); */
+  padding: 1.5rem;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
   position: sticky;
   top: 0;
   z-index: 1000;
   display: flex;
-  justify-content: center;
+  flex-direction: row; 
   align-items: center;
+  justify-content: left; 
+  border-color: #333;
+  
+}
+
+.App-header h1 {
+  font-size: 3.5rem;
+  margin: 0;
+  color: white;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  font-style: italic; 
 }
 
 .App-header h1 a {
-  font-size: 2.5rem;
-  margin: 0;
   color: white;
   text-decoration: none;
 }
 
-/* Optional: General body color or reset */
-body {
-  margin: 0;
-  font-family: sans-serif;
-  background-color: #222; /* Optional: gives contrast behind white cards */
-}
-
-/* Dashboard tabs styling */
+/* Dashboard tabs styling  */
 .dashboard-tabs {
-  position: static;
-  top: 70px; /* Below header */
-  z-index: 999; /* High z-index but below header */
-  background-color: #004aad;
-  padding: 10px 0;
-  width: 100%;
   display: flex;
   justify-content: center;
   gap: 10px;
+  margin-top: 0.5rem;
+  width: 100%;
 }
 
+/* Specific styling for the header buttons */
+.dashboard-tabs button {
+  background-color: rgba(255, 255, 255, 0.15); /* Semi-transparent white */
+  color: rgb(0, 0, 0);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 0.5rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.dashboard-tabs button:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.dashboard-tabs button.active {
+  background-color: white;
+  color: #0a2463;
+}
+
+/* For links styled as buttons */
+.dashboard-tabs a {
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.15); /* Semi-transparent white */
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 0.5rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.dashboard-tabs a:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+.dashboard-tabs a.active {
+  background-color: white;
+  color: #0a2463;
+}
+
+/* General link styling */
 a {
   cursor: pointer;
-  color: white;
+  color: #0a2463;
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
 
 a:hover {
-  text-decoration: underline;
+  color: #1e50a2;
+}
+
+/* Button dashboard styling */
+.dashboard-button {
+  background-color: rgba(255, 255, 255, 0.15);
   color: white;
+  padding: 0.6rem 1.5rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  margin: 0 0.5rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  transition: all 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.dashboard-button:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.dashboard-button:active {
+  transform: translateY(0);
+}
+
+.dashboard-button.active {
+  background-color: white;
+  color: #0a2463;
+}
+
+/* Body styling */
+body {
+  margin: 0;
+  font-family: 'Inter', 'Segoe UI', -apple-system, system-ui, sans-serif;
+  background-color: #f5f7fa; /* Light gray background */
+  color: #333;
+}
+
+/* Container for page content */
+.content-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+/* Card styling for content sections */
+.card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Form styling */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease;
+}
+
+.form-control:focus {
+  border-color: #0a2463;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(10, 36, 99, 0.25);
+}
+
+/* Table styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+th, td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+th {
+  background-color: #f8fafc;
+  font-weight: 600;
+}
+
+tr:hover {
+  background-color: #f8fafc;
+}
+
+/* Alert and notification styling */
+.alert {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+}
+
+.alert-success {
+  background-color: #d1fae5;
+  color: #065f46;
+  border-left: 4px solid #10b981;
+}
+
+.alert-danger {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border-left: 4px solid #ef4444;
+}
+
+/* Badge styling */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 9999px;
+}
+
+.badge-primary {
+  background-color: #0a2463;
+  color: white;
+}
+
+.badge-success {
+  background-color: #10b981;
+  color: white;
+}
+
+.badge-danger {
+  background-color: #ef4444;
+  color: white;
+}
+
+.badge-warning {
+  background-color: #f59e0b;
+  color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .App-header {
+    padding: 1rem;
+  }
+  
+  .App-header h1 {
+    font-size: 2rem;
+  }
+  
+  .dashboard-tabs {
+    flex-wrap: wrap;
+  }
+  
+  .dashboard-tabs button,
+  .dashboard-tabs a,
+  .dashboard-button {
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .content-container {
+    padding: 0 1rem;
+  }
+  
+  table {
+    display: block;
+    overflow-x: auto;
+  }
 }

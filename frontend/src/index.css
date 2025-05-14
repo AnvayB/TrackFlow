@@ -1,62 +1,232 @@
+/* Enhanced index.css */
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
+  color: #213547;
+  background-color: #f5f7fa;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-
+/* Base Typography */
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+  margin: 0 0 1rem;
+  color: #0a2463;
 }
 
+h2 {
+  font-size: 2em;
+  margin: 0 0 0.75rem;
+  color: #0a2463;
+}
+
+h3 {
+  font-size: 1.5em;
+  margin: 0 0 0.5rem;
+  color: #0a2463;
+}
+
+p {
+  margin: 0 0 1rem;
+}
+
+/* Enhanced button styling */
 button {
-  border-radius: 8px;
+  border-radius: 6px;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
+  padding: 0.6em 1.4em;
+  font-size: 0.95rem;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #f8f9fa;
+  color: #2b2d42;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.01em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
-@media (prefers-color-scheme: light) {
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  border-color: #e2e8f0;
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(10, 36, 99, 0.25);
+}
+
+/* Primary button style */
+button.primary {
+  background-color: #0a2463;
+  color: white;
+  box-shadow: 0 2px 5px rgba(10, 36, 99, 0.3);
+}
+
+button.primary:hover {
+  background-color: #1e50a2;
+  box-shadow: 0 4px 10px rgba(10, 36, 99, 0.4);
+}
+
+button.primary:active {
+  background-color: #061b4d;
+  box-shadow: 0 2px 3px rgba(10, 36, 99, 0.3);
+}
+
+/* Secondary button style */
+button.secondary {
+  background-color: white;
+  color: #0a2463;
+  border: 1px solid #d1d9e6;
+}
+
+button.secondary:hover {
+  background-color: #f8f9fa;
+  border-color: #0a2463;
+}
+
+/* Success button style */
+button.success {
+  background-color: #10b981;
+  color: white;
+  box-shadow: 0 2px 5px rgba(16, 185, 129, 0.3);
+}
+
+button.success:hover {
+  background-color: #0ea271;
+  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4);
+}
+
+/* Danger button style */
+button.danger {
+  background-color: #ef4444;
+  color: white;
+  box-shadow: 0 2px 5px rgba(239, 68, 68, 0.3);
+}
+
+button.danger:hover {
+  background-color: #dc2626;
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4);
+}
+
+/* Info button style */
+button.info {
+  background-color: #3b82f6;
+  color: white;
+  box-shadow: 0 2px 5px rgba(59, 130, 246, 0.3);
+}
+
+button.info:hover {
+  background-color: #2563eb;
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Additional Common Styles */
+.card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  transition: box-shadow 0.2s;
+}
+
+.card:hover {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+  color: #495057;
+  background-color: #fff;
+  border-color: #0a2463;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(10, 36, 99, 0.25);
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #242424;
   }
-  a:hover {
-    color: #747bff;
+  
+  h1, h2, h3 {
+    color: white;
   }
+  
   button {
-    background-color: #f9f9f9;
+    background-color: #2d3748;
+    color: rgba(255, 255, 255, 0.9);
   }
+  
+  button:hover {
+    background-color: #3a4a63;
+  }
+  
+  button.secondary {
+    background-color: #1a202c;
+    color: rgba(255, 255, 255, 0.9);
+    border-color: #4a5568;
+  }
+  
+  button.secondary:hover {
+    background-color: #2d3748;
+    border-color: #718096;
+  }
+  
+  .card {
+    background-color: #1a202c;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  }
+  
+  .form-control {
+    color: white;
+    background-color: #2d3748;
+    border-color: #4a5568;
+  }
+  
+  .form-control:focus {
+    color: white;
+    background-color: #2d3748;
+    border-color: #90cdf4;
+    box-shadow: 0 0 0 0.2rem rgba(144, 205, 244, 0.25);
+  } 
 }

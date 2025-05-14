@@ -397,7 +397,7 @@ const orderValidationRules = [
   body('shippingCost').notEmpty().withMessage('Shipping cost is required')
 ];
 
-// Enhanced function to convert frontend format to backend format with detailed logging
+// Function to convert frontend format to backend format with detailed logging
 function convertFrontendToBackendOrder(frontendOrder) {
   console.log('Converting order format. Original:', JSON.stringify(frontendOrder, null, 2));
   

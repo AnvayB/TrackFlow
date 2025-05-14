@@ -156,7 +156,7 @@ app.get('/health', async (req, res) => {
   });
 });
 
-// Enhanced notification function with better error handling and delivery
+//  notification function
 async function sendNotification(orderId, customerEmail, status, customerName = '') {
   console.log(`📣 Sending notification for Order #${orderId} (${status}) to ${customerEmail}`);
   
@@ -311,7 +311,7 @@ async function sendNotification(orderId, customerEmail, status, customerName = '
   }
 }
 
-// Enhanced /notify endpoint with better error handling and response
+// /notify endpoint with better error handling and response
 app.post('/notify', async (req, res) => {
   console.log('📩 Received notification request:', req.body);
   
@@ -445,7 +445,7 @@ app.get('/test-ses', async (req, res) => {
   }
 });
 
-// Enhanced test notification endpoint
+// test notification endpoint
 app.post('/test-notification', async (req, res) => {
   // Default test values
   const { 

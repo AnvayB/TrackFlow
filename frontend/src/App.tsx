@@ -29,7 +29,7 @@ export default function App() {
     <Router>
       <div className="App">
         <header className="App-header">
-          <a href="/"><h1><b>TrackFlow</b></h1></a>
+          <a href="/"><h1><b>TrackFlow&#10132; </b></h1></a>
         </header>
         <main className="App-content">
           <div className="dashboard-wrapper">
