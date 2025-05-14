@@ -26,7 +26,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 console.log(`Running in ${isDevelopment ? 'DEVELOPMENT' : 'PRODUCTION'} mode`);
 
 // Invoices service configuration
-const INVOICES_SERVICE_URL = process.env.INVOICES_SERVICE_URL || 'http://localhost:3002';
+const INVOICES_SERVICE_URL = process.env.INVOICES_SERVICE_URL || 'http://localhost:3003';
 const NOTIFICATIONS_SERVICE_URL = process.env.NOTIFICATIONS_SERVICE_URL || 'http://localhost:4000';
 
 // Middleware

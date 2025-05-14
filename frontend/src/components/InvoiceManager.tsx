@@ -4,7 +4,7 @@ import axios from 'axios';
 import './Invoices.css';
 
 interface Order {
-  orderId: number;
+  orderId: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -39,7 +39,7 @@ interface InvoiceResponse {
 }
 
 const ORDER_API = 'http://localhost:3001/orders';
-const INVOICE_API = 'http://localhost:3002/invoices';
+const INVOICE_API = 'http://localhost:3003/invoices';
 
 export default function InvoiceManager() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -50,8 +50,8 @@ export default function InvoiceManager() {
   });
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [expandedOrderId, setExpandedOrderId] = useState<number | null>(null);
-  const [generatingInvoice, setGeneratingInvoice] = useState<number | null>(null);
+  const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
+  const [generatingInvoice, setGeneratingInvoice] = useState<string | null>(null);
 
   useEffect(() => {
     fetchOrders();
@@ -61,7 +61,7 @@ export default function InvoiceManager() {
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.get(ORDER_API);
+      const res = await axios.get(`${ORDER_API}/all`);
       setOrders(res.data);
     } catch (err) {
       console.error('Failed to fetch orders:', err);
@@ -90,23 +90,22 @@ export default function InvoiceManager() {
     return matchesId && matchesName && matchesEmail;
   });
 
-  const handleGenerateInvoice = async (orderId: number) => {
+  const handleGenerateInvoice = async (orderId: string) => {
     try {
       setGeneratingInvoice(orderId);
       setError(null);
       
-      const response = await axios.post<InvoiceResponse>(`${INVOICE_API}/generate/${orderId}`);
+      const response = await axios.post(`${INVOICE_API}/generate/${orderId.toString()}`);
+
+      // await axios.post<InvoiceResponse>(`${INVOICE_API}/generate/${orderId.toString()}`);
       
       if (response.data.success) {
-        // Handle development mode (local file)
         if (response.data.filePath?.startsWith('local://')) {
           alert('Invoice generated successfully! Check the server console for the file location.');
-        }
-        // Handle production mode (S3 URL)
-        else if (response.data.s3Url) {
+        } else if (response.data.s3Url) {
           window.open(response.data.s3Url, '_blank');
         }
-        
+
         if (response.data.emailSent) {
           alert('Invoice has been sent to the customer\'s email.');
         }
@@ -122,7 +121,7 @@ export default function InvoiceManager() {
     }
   };
 
-  const toggleExpand = (orderId: number) => {
+  const toggleExpand = (orderId: string) => {
     setExpandedOrderId(expandedOrderId === orderId ? null : orderId);
   };
 
@@ -169,7 +168,7 @@ export default function InvoiceManager() {
           <p>No matching orders found.</p>
         ) : (
           filteredOrders.map(order => (
-            <li key={order.orderId} className="order-item">
+            <li key={order.orderId.toString()} className="order-item">
               <div className="order-header">
                 <div className="order-summary">
                   <strong>Order #{order.orderId}</strong>
@@ -179,22 +178,22 @@ export default function InvoiceManager() {
                 </div>
                 <div className="order-actions">
                   <button 
-                    onClick={() => handleGenerateInvoice(order.orderId)} 
-                    disabled={generatingInvoice === order.orderId}
+                    onClick={() => handleGenerateInvoice(order.orderId.toString())} 
+                    disabled={generatingInvoice === order.orderId.toString()}
                     className="generate-invoice-btn"
                   >
-                    {generatingInvoice === order.orderId ? 'Generating...' : 'Generate Invoice'}
+                    {generatingInvoice === order.orderId.toString() ? 'Generating...' : 'Generate Invoice'}
                   </button>
                   <button 
-                    onClick={() => toggleExpand(order.orderId)}
+                    onClick={() => toggleExpand(order.orderId.toString())}
                     className="toggle-details-btn"
                   >
-                    {expandedOrderId === order.orderId ? '▼ Hide Details' : '▶ Show Details'}
+                    {expandedOrderId === order.orderId.toString() ? '▼ Hide Details' : '▶ Show Details'}
                   </button>
                 </div>
               </div>
 
-              {expandedOrderId === order.orderId && (
+              {expandedOrderId === order.orderId.toString() && (
                 <div className="order-details">
                   <div className="customer-info">
                     <h4><u>Customer Information</u></h4>

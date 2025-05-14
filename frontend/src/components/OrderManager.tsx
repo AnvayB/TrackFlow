@@ -469,7 +469,7 @@ export default function OrderManager() {
               maxLength={4}
               value={form.payment.expDate} 
               onChange={handleChange} 
-              placeholder="Expiration Date (MM/YY)" 
+              placeholder="Expiration Date (MMYY)" 
               required 
             />
             

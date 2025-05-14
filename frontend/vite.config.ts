@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api/orders': 'http://localhost:3001',
-      '/api/invoices': 'http://localhost:3002'
+      '/api/invoices': 'http://localhost:3003'
     }
   }
 })
