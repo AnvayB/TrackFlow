@@ -226,8 +226,10 @@ export default function OrderManager() {
         billingState: order.payment?.billingState || '',
         billingCountry: order.payment?.billingCountry || '',
         billingZipCode: order.payment?.billingZipCode || '',
-        cardNumber: '', // Don't pre-fill card number for security
-        securityNumber: '', // Don't pre-fill security number for security
+        // Don't pre-fill card number for security
+        // cardNumber: '',
+        cardNumber: order.payment?.cardNumber || '',
+        securityNumber: order.payment?.securityNumber || '',
         expDate: order.payment?.expDate || ''
       }
     });
@@ -645,7 +647,6 @@ export default function OrderManager() {
           
           <form onSubmit={handleSubmit}>
             {renderFormSection()}
-            
             <div className="form-actions">
               {activeFormTab !== 'customer' && (
                 <button 
