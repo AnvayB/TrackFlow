@@ -4,7 +4,7 @@ import axios from 'axios';
 import './Invoices.css';
 
 interface Order {
-  orderId: number;
+  orderId: string | number;
   firstName: string;
   lastName: string;
   email: string;
@@ -61,7 +61,8 @@ export default function InvoiceManager() {
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.get(ORDER_API);
+      // const res = await axios.get(ORDER_API);
+      const res = await axios.get(`${ORDER_API}/all`);
       setOrders(res.data);
     } catch (err) {
       console.error('Failed to fetch orders:', err);
@@ -179,14 +180,14 @@ export default function InvoiceManager() {
                 </div>
                 <div className="order-actions">
                   <button 
-                    onClick={() => handleGenerateInvoice(order.orderId)} 
+                    onClick={() => handleGenerateInvoice(Number(order.orderId))} 
                     disabled={generatingInvoice === order.orderId}
                     className="generate-invoice-btn"
                   >
                     {generatingInvoice === order.orderId ? 'Generating...' : 'Generate Invoice'}
                   </button>
                   <button 
-                    onClick={() => toggleExpand(order.orderId)}
+                    onClick={() => toggleExpand(Number(order.orderId))}
                     className="toggle-details-btn"
                   >
                     {expandedOrderId === order.orderId ? '▼ Hide Details' : '▶ Show Details'}
