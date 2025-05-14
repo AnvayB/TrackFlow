@@ -470,6 +470,15 @@ app.post('/orders', orderValidationRules, async (req, res) => {
     await orderStorage.create(orderItem);
     console.log('Order stored successfully with ID:', orderId);
 
+    // Send order to Invoices service
+    try {
+      await axios.post(`${INVOICES_SERVICE_URL}/orders`, orderItem);
+      console.log('Order sent to Invoices service successfully');
+    } catch (error) {
+      console.error('Error sending order to Invoices service:', error);
+      // Don't fail the order creation if invoice service is down
+    }
+
     // After successfully creating the order, try to generate an invoice
     let invoiceResult = { generated: false };
     

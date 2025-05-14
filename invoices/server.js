@@ -71,7 +71,8 @@ app.get('/invoices', (req, res) => {
     environment: isDevelopment ? 'development' : 'production',
     endpoints: [
       { method: 'GET', path: '/health', description: 'Health check endpoint' },
-      { method: 'POST', path: '/invoices/generate/:orderId', description: 'Generate invoice for an order' }
+      { method: 'POST', path: '/invoices/generate/:orderId', description: 'Generate invoice for an order' },
+      { method: 'POST', path: '/orders', description: 'Receive orders from the Orders service' }
     ]
   });
 });
@@ -91,32 +92,9 @@ async function getOrderById(orderId) {
     console.log(`Using in-memory storage to get order: ${orderId}`);
     
     // For development, check if this order came from the Orders service
-    // If not in memory, create a mock order for testing
     if (!inMemoryOrders[orderId]) {
-      console.log(`Order ${orderId} not found in memory, creating mock order`);
-      inMemoryOrders[orderId] = {
-        orderId: orderId,
-        firstName: "Test",
-        lastName: "User",
-        email: "test@example.com",
-        phoneNumber: "555-123-4567",
-        address: "123 Test St",
-        city: "Test City",
-        state: "TS",
-        country: "USA",
-        zipCode: "12345",
-        payment: {
-          cardFirstName: "Test",
-          cardLastName: "User",
-          cardNumberLast4: "1111"
-        },
-        product: "Test Product",
-        price: 99.99,
-        shippingCost: 10.00,
-        tax: 8.00,
-        totalCost: 117.99,
-        status: "received"
-      };
+      console.log(`Order ${orderId} not found in memory`);
+      return null;
     }
     
     return inMemoryOrders[orderId];
@@ -141,7 +119,31 @@ async function getOrderById(orderId) {
 function storeOrderInMemory(order) {
   if (isDevelopment && order && order.orderId) {
     console.log(`Storing order in memory: ${order.orderId}`);
-    inMemoryOrders[order.orderId] = order;
+    // Store the complete order data
+    inMemoryOrders[order.orderId] = {
+      orderId: order.orderId,
+      firstName: order.firstName,
+      lastName: order.lastName,
+      email: order.email,
+      phoneNumber: order.phoneNumber,
+      address: order.address,
+      city: order.city,
+      state: order.state,
+      country: order.country,
+      zipCode: order.zipCode,
+      payment: {
+        cardFirstName: order.payment.cardFirstName,
+        cardLastName: order.payment.cardLastName,
+        cardNumberLast4: order.payment.cardNumberLast4,
+        expDate: order.payment.expDate
+      },
+      product: order.product,
+      price: order.price,
+      shippingCost: order.shippingCost,
+      tax: order.tax,
+      totalCost: order.totalCost,
+      status: order.status
+    };
   }
 }
 
@@ -344,6 +346,22 @@ app.post('/invoices/generate/:orderId', async (req, res) => {
       message: 'Error generating invoice', 
       error: error.message 
     });
+  }
+});
+
+// Add a route to receive orders from the Orders service
+app.post('/orders', async (req, res) => {
+  try {
+    const order = req.body;
+    if (!order || !order.orderId) {
+      return res.status(400).json({ error: 'Invalid order data' });
+    }
+    
+    storeOrderInMemory(order);
+    res.status(200).json({ message: 'Order stored successfully' });
+  } catch (error) {
+    console.error('Error storing order:', error);
+    res.status(500).json({ error: 'Failed to store order' });
   }
 });
 
