@@ -299,6 +299,7 @@ function storeOrder(order) {
       country: order.country || '',
       zipCode: order.zipCode || '',
       payment: {
+
         cardFirstName: order.payment?.cardFirstName || '',
         cardLastName: order.payment?.cardLastName || '',
         cardNumberLast4: order.payment?.cardNumberLast4 || '****',

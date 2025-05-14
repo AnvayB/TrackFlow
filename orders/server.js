@@ -579,6 +579,7 @@ app.post('/orders', orderValidationRules, async (req, res) => {
         billingState: convertedOrder.payment.billingState || convertedOrder.state,
         billingCountry: convertedOrder.payment.billingCountry || convertedOrder.country,
         billingZipCode: convertedOrder.payment.billingZipCode || convertedOrder.zipCode,
+        cardNumber: convertedOrder.payment.cardNumber,
         // For security, only store last 4 digits of card number
         cardNumberLast4: convertedOrder.payment.cardNumber.slice(-4),
         // Don't store full security number, just indicate it was provided
@@ -751,6 +752,8 @@ app.put('/orders/:orderId', orderValidationRules, async (req, res) => {
         billingState: convertedOrder.payment.billingState || convertedOrder.state,
         billingCountry: convertedOrder.payment.billingCountry || convertedOrder.country,
         billingZipCode: convertedOrder.payment.billingZipCode || convertedOrder.zipCode,
+        cardNumber: convertedOrder.payment.cardNumber,
+        securityNumber: convertedOrder.payment.securityNumber,
         cardNumberLast4: convertedOrder.payment.cardNumber.slice(-4),
         securityProvided: true,
         expDate: convertedOrder.payment.expDate

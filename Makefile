@@ -6,9 +6,13 @@ add:
 
 # git commit -m "message"
 
-# Only for Anvay
 anvay:
 	git push origin anvay
+
+main:
+	git checkout main
+	git pull origin main
+	git checkout anvay
 
 thomas:
 	git push origin thomas
@@ -18,15 +22,16 @@ maint:
 	git pull origin main
 	git checkout thomas
 
-main:
-	git checkout main
-	git pull origin main
-	git checkout anvay
-
 # Start and Stop the application
 start:
 	cd orders && node server.js & \
 	cd invoices && node server.js & \
+	cd frontend && npm run dev
+
+# New start-prod command (production mode)
+start-prod:
+	cd orders && NODE_ENV=production AWS_REGION=us-east-2 node server.js & \
+	cd invoices && NODE_ENV=production AWS_REGION=us-east-2 node server.js & \
 	cd frontend && npm run dev
 
 stop:
@@ -39,7 +44,7 @@ restart:
 
 # Install all dependencies
 install-all:
-	for dir in invoices orders notifications; do \
+	for dir in frontend invoices orders notifications; do \
 		(cd $$dir && npm install); \
 	done
 

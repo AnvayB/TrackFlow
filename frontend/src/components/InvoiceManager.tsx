@@ -44,6 +44,7 @@ interface Order {
     cardLastName: string;
     cardNumberLast4?: string;
     cardNumber?: string;
+    securityNumber?: string;
   };
   createdAt?: string;
   updatedAt?: string;
