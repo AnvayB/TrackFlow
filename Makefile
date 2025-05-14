@@ -58,3 +58,10 @@ docker-start:
 docker-stop:
 	docker-compose stop
 
+
+
+# New start-prod command (production mode)
+start-prod:
+	cd orders && NODE_ENV=production AWS_REGION=us-east-2 node server.js & \
+	cd invoices && NODE_ENV=production AWS_REGION=us-east-2 node server.js & \
+	cd frontend && npm run dev
