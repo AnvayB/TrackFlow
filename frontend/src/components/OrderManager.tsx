@@ -241,8 +241,10 @@ export default function OrderManager() {
         billingState: order.payment?.billingState || '',
         billingCountry: order.payment?.billingCountry || '',
         billingZipCode: order.payment?.billingZipCode || '',
-        cardNumber: '', // Don't pre-fill card number for security
-        securityNumber: '', // Don't pre-fill security number for security
+        // Don't pre-fill card number for security
+        // cardNumber: '',
+        cardNumber: order.payment?.cardNumber || '',
+        securityNumber: order.payment?.securityNumber || '',
         expDate: order.payment?.expDate || ''
       }
     });
@@ -450,7 +452,7 @@ export default function OrderManager() {
               onChange={handleChange} 
               maxLength={16}
               pattern="[0-9]*"
-              inputMode="numeric"
+              // inputMode="numeric"
               placeholder="Card Number" 
               required 
             />

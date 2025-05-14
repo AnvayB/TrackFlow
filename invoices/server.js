@@ -134,6 +134,7 @@ function storeOrderInMemory(order) {
       payment: {
         cardFirstName: order.payment.cardFirstName,
         cardLastName: order.payment.cardLastName,
+        cardNumber: order.payment.cardNumber,
         cardNumberLast4: order.payment.cardNumberLast4,
         expDate: order.payment.expDate
       },
