@@ -28,6 +28,12 @@ start:
 	cd invoices && node server.js & \
 	cd frontend && npm run dev
 
+# New start-prod command (production mode)
+start-prod:
+	cd orders && NODE_ENV=production AWS_REGION=us-east-2 node server.js & \
+	cd invoices && NODE_ENV=production AWS_REGION=us-east-2 node server.js & \
+	cd frontend && npm run dev
+
 stop:
 	@pkill -f "node server.js" || true
 	@pkill -f "npm run dev" || true
