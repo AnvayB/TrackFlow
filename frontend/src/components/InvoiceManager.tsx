@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import axios from 'axios';
 import './Invoices.css';
