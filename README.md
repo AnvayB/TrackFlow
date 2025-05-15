@@ -59,6 +59,11 @@ You can stop the application in two ways:
 ```bash
 make stop
 ```
+### Production Deployment
+```
+ make stop-prod
+ ```
+ This will stop the application in production mode with AWS services.
 
 ## Environment Configuration
 

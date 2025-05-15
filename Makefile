@@ -34,6 +34,11 @@ start-prod:
 	cd invoices && NODE_ENV=production AWS_REGION=us-east-2 node server.js & \
 	cd frontend && npm run dev
 
+stop-prod:
+	cd orders && NODE_ENV=production AWS_REGION=us-east-2 pkill -f "node server.js" || true
+	cd invoices && NODE_ENV=production AWS_REGION=us-east-2 pkill -f "node server.js" || true
+	cd frontend && npm run dev pkill -f "npm run dev" || true
+
 stop:
 	@pkill -f "node server.js" || true
 	@pkill -f "npm run dev" || true
