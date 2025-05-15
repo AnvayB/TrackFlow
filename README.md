@@ -1,7 +1,7 @@
 # TrackFlow
 
 
-![tf-full](https://github.com/user-attachments/assets/3f10958b-a8e2-48d0-a9f3-9853edb73225)
+<img width="1420" alt="Screenshot 2025-05-15 at 12 59 38 AM" src="https://github.com/user-attachments/assets/95e5617d-1cb6-4469-861c-f356100dd8c8" />
 
 TrackFlow is a comprehensive logistics tracking platform that helps businesses manage orders, generate invoices, and track shipments efficiently.
 
@@ -62,6 +62,7 @@ make stop
 ### Production Deployment
 ```
  make stop-prod
+
  ```
  This will stop the application in production mode with AWS services.
 
