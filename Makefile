@@ -1,3 +1,7 @@
+check:
+	git branch
+	git status
+
 # Github commands:
 add:
 	git status
@@ -34,14 +38,14 @@ start-prod:
 	cd invoices && NODE_ENV=production AWS_REGION=us-east-2 node server.js & \
 	cd frontend && npm run dev
 
+stop:
+	@pkill -f "node server.js" || true
+	@pkill -f "npm run dev" || true
+
 stop-prod:
 	cd orders && NODE_ENV=production AWS_REGION=us-east-2 pkill -f "node server.js" || true
 	cd invoices && NODE_ENV=production AWS_REGION=us-east-2 pkill -f "node server.js" || true
 	cd frontend && npm run dev pkill -f "npm run dev" || true
-
-stop:
-	@pkill -f "node server.js" || true
-	@pkill -f "npm run dev" || true
 
 restart:
 	make stop
@@ -67,11 +71,3 @@ docker-start:
 	docker-compose start
 docker-stop:
 	docker-compose stop
-
-
-
-# New start-prod command (production mode)
-start-prod:
-	cd orders && NODE_ENV=production AWS_REGION=us-east-2 node server.js & \
-	cd invoices && NODE_ENV=production AWS_REGION=us-east-2 node server.js & \
-	cd frontend && npm run dev
