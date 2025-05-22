@@ -94,10 +94,8 @@ The application supports two environments:
 - `POST /invoices/generate/:orderId` - Generate invoice
 - `GET /invoices` - Service status
 
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Support
-
-For support, please open an issue in the GitHub repository or contact the development team.
+## Collaborators
+- [Thomas Dvorochkin](https://www.linkedin.com/in/thomasdvorochkin/)
+- [Niranjan Rao](https://www.linkedin.com/in/niranjan-rao-cali/)
+- [Victor Dumaslan](https://www.linkedin.com/in/victordumaslan/)
+- [Akshit Tyagi](https://www.linkedin.com/in/akshit-tyagi-at/)
